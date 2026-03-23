@@ -71,10 +71,21 @@ class NotificationsRepository(BaseRepository):
 
     @staticmethod
     def _map_notification_record(item: dict[str, object]) -> NotificationRecord:
+        status = item.get("status")
+        if status is None:
+            if item.get("commentId"):
+                status = "comment"
+            elif item.get("likeId"):
+                status = "like"
+            elif item.get("transactionType"):
+                status = str(item["transactionType"])
+            else:
+                status = "unknown"
+
         return NotificationRecord(
             id=item["id"],
             user_id=item["userId"],
             transaction_id=item.get("transactionId"),
-            status=item["status"],
+            status=str(status),
             is_read=item["isRead"],
         )

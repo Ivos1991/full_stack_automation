@@ -41,10 +41,21 @@ class NotificationsService:
         if transaction_id is None and isinstance(transaction, dict):
             transaction_id = transaction.get("id")
 
+        status = item.get("status")
+        if status is None:
+            if item.get("commentId"):
+                status = "comment"
+            elif item.get("likeId"):
+                status = "like"
+            elif item.get("transactionType"):
+                status = str(item["transactionType"])
+            else:
+                status = "unknown"
+
         return NotificationRecord(
             id=item["id"],
             user_id=item["userId"],
             transaction_id=transaction_id,
-            status=item["status"],
+            status=str(status),
             is_read=item["isRead"],
         )

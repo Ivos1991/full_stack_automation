@@ -6,7 +6,10 @@ from pathlib import Path
 import os
 from urllib.parse import urlparse
 
+from dotenv import load_dotenv
 import requests
+
+load_dotenv()
 
 
 def _get_bool(name: str, default: bool) -> bool:
