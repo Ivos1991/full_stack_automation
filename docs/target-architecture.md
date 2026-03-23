@@ -18,7 +18,7 @@ The architecture should be modular, layered, explicit, and easy to extend withou
 - keep framework code generic and reusable
 - prefer composition over inheritance unless the shared behavior is technical and stable
 - use function-scoped isolation by default
-- keep orchestration visible in tests and flows
+- keep orchestration visible in tests and explicit fixtures
 
 ## Proposed Folder Structure
 
@@ -47,50 +47,48 @@ standalone-rwa-framework/
         api/
           base_api_client.py
         db/
-          postgres_client.py
-      models/
-        common.py
-      assertions/
-        custom_assertions.py
-      utils/
-        paths.py
-        time_utils.py
+          base_db_client.py
+          lowdb_json_client.py
     ui/
-      components/
-        base_component.py
-        nav_bar.py
-        modal.py
       pages/
         base_page.py
-        login_page.py
-        dashboard_page.py
-        transactions_page.py
-      flows/
-        auth_flow.py
-        transaction_flow.py
+        sign_in_page.py
+        home_page.py
+        transaction_create_page.py
+        transaction_detail_page.py
+        notifications_page.py
     api/
       clients/
         auth_client.py
+        comments_client.py
+        notifications_client.py
+        test_data_client.py
         users_client.py
         transactions_client.py
       services/
         auth_service.py
+        comments_service.py
+        notifications_service.py
+        test_data_service.py
         users_service.py
         transactions_service.py
       schemas/
         auth_models.py
+        comment_models.py
+        notification_models.py
         user_models.py
         transaction_models.py
     db/
-      queries/
-        users_queries.py
-        transactions_queries.py
       repositories/
         base_repository.py
+        comments_repository.py
+        contacts_repository.py
+        notifications_repository.py
         users_repository.py
         transactions_repository.py
     fixtures/
       hooks.py
+      core_fixtures.py
       browser_fixtures.py
       auth_fixtures.py
       api_fixtures.py
@@ -99,7 +97,6 @@ standalone-rwa-framework/
     testdata/
       factories/
         user_factory.py
-        transaction_factory.py
       builders/
         payload_builders.py
   tests/
@@ -129,8 +126,6 @@ Responsibilities:
 - logging
 - Allure helpers
 - generic API and DB clients
-- shared models and assertions
-- utility helpers
 - explicit runtime resolution for external RWA dependency configuration
 
 Rules:
@@ -145,17 +140,11 @@ Purpose:
 
 - represent the browser-facing application surface
 
-Sub-layers:
-
-- `components/` for reusable widgets
-- `pages/` for screen-level interaction models
-- `flows/` for multi-page user journeys
-
 Rules:
 
 - page objects handle locators and UI interactions
 - page objects may include UI-specific validations
-- business workflows spanning multiple pages belong in flows
+- higher-level business orchestration stays visible in tests unless a reusable flow becomes clearly necessary
 - page objects must not call the DB directly
 - page objects must not send raw API requests
 
@@ -294,8 +283,7 @@ Disallowed dependencies:
 - technical shared behavior with stable semantics
 - examples:
   - `BasePage`
-  - `BaseComponent`
-  - `BaseApiClient`
+  - `BaseAPIClient`
   - `BaseRepository`
 
 ### Use Composition For
@@ -307,9 +295,9 @@ Disallowed dependencies:
 
 Examples:
 
-- `AuthFlow` composes `LoginPage` and `DashboardPage`
+- `NotificationsService` composes `NotificationsClient`
 - `TransactionsService` composes `TransactionsClient`
-- `TransactionsRepository` composes `PostgresClient`
+- `TransactionsRepository` composes `LowDBJSONClient`
 
 ### Rule of Thumb
 

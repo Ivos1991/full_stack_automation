@@ -1,6 +1,6 @@
 from .auth_models import AuthCredentials, CurrentUser
 from .comment_models import CommentCreatePayload, CommentRecord
-from .notification_models import NotificationRecord
+from .notification_models import NotificationRecord, NotificationUpdatePayload
 from .transaction_models import (
     PaymentNotificationRecord,
     TransactionCreatePayload,
@@ -19,6 +19,7 @@ __all__ = [
     "CurrentUser",
     "GeneratedUserData",
     "NotificationRecord",
+    "NotificationUpdatePayload",
     "PaymentNotificationRecord",
     "TransactionCreatePayload",
     "TransactionFeedItem",

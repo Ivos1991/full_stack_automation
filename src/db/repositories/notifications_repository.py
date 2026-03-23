@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from src.api.schemas.notification_models import NotificationRecord
+from src.api.schemas.notification_models import NotificationRecord, map_notification_record
 from src.api.schemas.transaction_models import PaymentNotificationRecord
 from src.db.repositories.base_repository import BaseRepository
 
@@ -11,7 +11,7 @@ class NotificationsRepository(BaseRepository):
         state = self.db_client.read_state()
         for item in state.get("notifications", []):
             if item.get("id") == notification_id:
-                return self._map_notification_record(item)
+                return map_notification_record(item)
         return None
 
     def get_notifications_for_user(self, user_id: str) -> list[NotificationRecord]:
@@ -24,7 +24,7 @@ class NotificationsRepository(BaseRepository):
             matching_notifications,
             key=lambda item: (item.get("modifiedAt", ""), item.get("createdAt", "")),
         )
-        return [self._map_notification_record(item) for item in ordered_notifications]
+        return [map_notification_record(item) for item in ordered_notifications]
 
     def get_unread_notification_by_user_transaction_and_status(
         self,
@@ -78,25 +78,3 @@ class NotificationsRepository(BaseRepository):
                 )
 
         return None
-
-    @staticmethod
-    def _map_notification_record(item: dict[str, object]) -> NotificationRecord:
-        """Normalize lowdb notification records so tests can assert one stable model."""
-        status = item.get("status")
-        if status is None:
-            if item.get("commentId"):
-                status = "comment"
-            elif item.get("likeId"):
-                status = "like"
-            elif item.get("transactionType"):
-                status = str(item["transactionType"])
-            else:
-                status = "unknown"
-
-        return NotificationRecord(
-            id=item["id"],
-            user_id=item["userId"],
-            transaction_id=item.get("transactionId"),
-            status=str(status),
-            is_read=item["isRead"],
-        )
