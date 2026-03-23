@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "rwa-automation-framework"
+version = "0.1.0"
+description = "Standalone UI, API, and data-store validation framework for Cypress Real World App."
+authors = ["Ivo Seguras"]
+readme = "README.md"
+packages = [{ include = "src" }]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+allure-pytest = "^2.13.5"
+assertpy = "^1.1"
+faker = "^37.0.0"
+playwright = "1.52.0"
+psycopg = { version = "^3.2.9", extras = ["binary"] }
+pydantic = "^2.11.0"
+pytest = "^8.4.0"
+pytest-base-url = "^2.1.0"
+pytest-playwright = "^0.7.0"
+python-dotenv = "^1.1.0"
+requests = "^2.32.0"
+
+[build-system]
+requires = ["poetry-core>=1.8.0"]
+build-backend = "poetry.core.masonry.api"

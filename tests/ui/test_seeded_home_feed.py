@@ -1,0 +1,35 @@
+from __future__ import annotations
+
+from assertpy import assert_that
+import pytest
+
+from src.framework.reporting.allure_helpers import attach_json
+
+
+@pytest.mark.ui
+class TestSeededHomeFeed:
+    def test_seeded_user_lands_on_transaction_feed(
+        self,
+        require_live_rwa_environment,
+        sign_in_page,
+        home_page,
+        seeded_business_user_credentials,
+    ):
+        sign_in_page.go_to()
+        sign_in_page.sign_in(
+            username=seeded_business_user_credentials.username,
+            password=seeded_business_user_credentials.password,
+        )
+
+        home_page.expect_seeded_user_landing_loaded()
+        visible_transactions = home_page.get_visible_transaction_summaries(limit=3)
+        attach_json(name="seeded-home-feed-ui-transactions", content=visible_transactions)
+
+        assert_that(visible_transactions, "Expected visible seeded home feed transactions").is_not_empty()
+        assert_that(visible_transactions[0], "Expected first visible transaction summary").contains_key(
+            "id",
+            "sender_name",
+            "action",
+            "receiver_name",
+            "amount_display",
+        )
