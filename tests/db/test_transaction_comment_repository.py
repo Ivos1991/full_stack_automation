@@ -8,6 +8,8 @@ from src.framework.reporting.allure_helpers import attach_json
 
 @pytest.mark.db
 class TestTransactionCommentRepository:
+    """DB coverage for persisted transaction comments."""
+
     def test_transaction_detail_comment_is_persisted_in_repository(
         self,
         require_live_rwa_environment,
@@ -15,6 +17,7 @@ class TestTransactionCommentRepository:
         seeded_sent_payment,
         seeded_created_comment,
     ):
+        """Create a comment through fixtures and verify the matching lowdb comment record for that transaction."""
         persisted_comment = connected_comments_repository.get_comment_by_transaction_and_content(
             transaction_id=seeded_sent_payment.id,
             content=seeded_created_comment.content,

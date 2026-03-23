@@ -10,6 +10,8 @@ from src.framework.reporting.allure_helpers import attach_file, attach_json
 
 @pytest.mark.e2e
 class TestTransactionCommentVerticalSlice:
+    """End-to-end coverage for transaction-detail comment creation."""
+
     def test_transaction_comment_vertical_slice_for_ui_created_payment(
         self,
         require_live_rwa_environment,
@@ -28,6 +30,7 @@ class TestTransactionCommentVerticalSlice:
         seeded_send_money_payment,
         seeded_transaction_comment_payload,
     ):
+        """Create a payment in the UI, add a comment on its detail page, and validate the same comment through API and DB."""
         recipient_full_name = (
             f"{seeded_send_money_contact['firstName']} {seeded_send_money_contact['lastName']}"
         )

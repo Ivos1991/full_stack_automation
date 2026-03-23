@@ -8,6 +8,8 @@ from src.framework.reporting.allure_helpers import attach_json
 
 @pytest.mark.api
 class TestTransactionCommentService:
+    """API coverage for transaction-detail comment creation."""
+
     def test_transaction_detail_comment_can_be_created_and_read_via_api(
         self,
         require_live_rwa_environment,
@@ -15,6 +17,7 @@ class TestTransactionCommentService:
         seeded_sent_payment,
         seeded_transaction_comment_payload,
     ):
+        """Create a comment on the fixture-created transaction and verify it is returned by the comments API."""
         comments = comments_service.create_comment(
             transaction_id=seeded_sent_payment.id,
             payload=seeded_transaction_comment_payload,

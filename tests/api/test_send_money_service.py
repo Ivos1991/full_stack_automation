@@ -8,6 +8,8 @@ from src.framework.reporting.allure_helpers import attach_json
 
 @pytest.mark.api
 class TestSendMoneyService:
+    """API coverage for the seeded send-money business flow."""
+
     def test_seeded_user_can_create_payment_and_observe_sender_api_state(
         self,
         require_live_rwa_environment,
@@ -19,6 +21,7 @@ class TestSendMoneyService:
         seeded_send_money_contact,
         seeded_send_money_payment,
     ):
+        """Log in as the seeded sender, create a payment, and validate sender-facing API state after the transfer."""
         auth_service.login(seeded_business_user_credentials)
 
         current_user_before_payment = users_service.get_current_user()

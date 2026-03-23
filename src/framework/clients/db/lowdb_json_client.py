@@ -56,6 +56,7 @@ class LowDBJSONClient(BaseDBClient):
         return json.loads(self.data_file.read_text(encoding="utf-8"))
 
     def write_state(self, state: dict[str, Any]) -> None:
+        """Persist lowdb state atomically so concurrent repository tests do not leave partial writes behind."""
         self.data_file.parent.mkdir(parents=True, exist_ok=True)
 
         with LOWDB_WRITE_LOCK:
@@ -74,6 +75,7 @@ class LowDBJSONClient(BaseDBClient):
             self.connection = state
 
     def mutate_state(self, mutator) -> Any:
+        """Lock, load, mutate, and persist lowdb state as one repository-level operation."""
         with LOWDB_WRITE_LOCK:
             state = self.read_state()
             result = mutator(state)

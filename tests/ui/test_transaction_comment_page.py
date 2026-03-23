@@ -10,6 +10,8 @@ from src.framework.reporting.allure_helpers import attach_file, attach_json
 
 @pytest.mark.ui
 class TestTransactionCommentPage:
+    """UI coverage for transaction-detail comment creation."""
+
     def test_seeded_sent_payment_can_receive_comment_in_transaction_detail_ui(
         self,
         require_live_rwa_environment,
@@ -21,6 +23,7 @@ class TestTransactionCommentPage:
         seeded_sent_payment,
         seeded_transaction_comment_payload,
     ):
+        """Open the seeded transaction detail, create a comment, and verify the comment renders in the UI."""
         sign_in_page.go_to()
         sign_in_page.sign_in(
             username=seeded_business_user_credentials.username,

@@ -8,6 +8,8 @@ from src.framework.reporting.allure_helpers import attach_json
 
 @pytest.mark.db
 class TestSendMoneyPersistence:
+    """DB coverage for persisted send-money side effects in lowdb."""
+
     def test_seeded_user_send_money_persists_transaction_balance_and_notification(
         self,
         require_live_rwa_environment,
@@ -21,6 +23,7 @@ class TestSendMoneyPersistence:
         connected_transactions_repository,
         connected_notifications_repository,
     ):
+        """Create a seeded payment and verify lowdb transaction, balances, and receiver notification after the write."""
         sender_before_payment = connected_users_repository.get_user_by_id(seeded_business_user["id"])
         receiver_before_payment = connected_users_repository.get_user_by_id(seeded_send_money_contact["id"])
 

@@ -42,6 +42,7 @@ class TransactionsRepository(BaseRepository):
         return self._map_transaction_record(latest_transaction, users_by_id)
 
     def get_public_feed_for_user(self, user_id: str, page: int = 1, limit: int = 10) -> TransactionFeedResponse:
+        """Reconstruct the seeded public feed ordering the same way the current RWA UI expects it."""
         state = self.db_client.read_state()
         users_by_id = {item["id"]: item for item in state["users"]}
         likes_by_transaction_id: dict[str, list[dict[str, object]]] = {}
@@ -75,6 +76,7 @@ class TransactionsRepository(BaseRepository):
         ordered_contact_transactions = self._order_transactions(contact_transactions)
         ordered_public_transactions = self._order_transactions(public_transactions)
 
+        # The first page mixes recent contact transactions ahead of the remaining public feed items.
         if page == 1:
             combined_transactions = ordered_contact_transactions[:5] + ordered_public_transactions
         else:

@@ -6,6 +6,8 @@ import pytest
 
 @pytest.mark.e2e
 class TestSignInVerticalSlice:
+    """End-to-end coverage for dynamic-user sign-in across UI, API, and lowdb state."""
+
     def test_sign_in_vertical_slice(
         self,
         require_live_rwa_environment,
@@ -17,6 +19,7 @@ class TestSignInVerticalSlice:
         created_user,
         auth_credentials,
     ):
+        """Create a dynamic user, sign in through the UI, then validate current-user API and persisted lowdb state."""
         # Validate the dynamically created lowdb-backed user exists before exercising the live app.
         db_user = connected_users_repository.get_user_by_username(auth_credentials.username)
         assert_that(db_user, "Expected created RWA user in lowdb data").is_not_none()

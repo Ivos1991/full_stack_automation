@@ -14,7 +14,10 @@ from src.framework.config.settings import get_settings
 
 @pytest.mark.db
 class TestUsersRepository:
+    """DB coverage for user persistence in both live and isolated repository paths."""
+
     def test_created_user_is_persisted_in_lowdb(self, require_live_rwa_environment, created_user, connected_users_repository):
+        """Create a dynamic user through the live API fixtures and verify the user exists in the shared lowdb state."""
         persisted_user = connected_users_repository.get_user_by_username(created_user.username)
 
         assert_that(persisted_user, "Expected created user in lowdb").is_not_none()
@@ -22,6 +25,7 @@ class TestUsersRepository:
         assert_that(persisted_user["username"], "Expected persisted username").is_equal_to(created_user.username)
 
     def test_repository_can_create_and_delete_user_in_isolated_lowdb_copy(self, generated_user_data):
+        """Copy the configured lowdb file to an isolated temp file, then validate create/delete without touching live state."""
         source_path = get_settings().rwa_data_file
         if not source_path:
             pytest.skip("RWA_DATA_FILE is not configured for isolated lowdb-copy repository validation.")

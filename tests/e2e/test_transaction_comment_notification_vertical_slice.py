@@ -8,6 +8,8 @@ from src.framework.reporting.allure_helpers import attach_json
 
 @pytest.mark.e2e
 class TestTransactionCommentNotificationVerticalSlice:
+    """End-to-end coverage for the notification side effect triggered by a transaction comment."""
+
     def test_transaction_comment_creates_unread_receiver_notification_across_api_and_db(
         self,
         require_live_rwa_environment,
@@ -27,6 +29,7 @@ class TestTransactionCommentNotificationVerticalSlice:
         seeded_send_money_payment,
         seeded_transaction_comment_payload,
     ):
+        """Create the payment and comment in the UI, then verify the receiver-side unread notification through API and DB."""
         recipient_full_name = (
             f"{seeded_send_money_contact['firstName']} {seeded_send_money_contact['lastName']}"
         )

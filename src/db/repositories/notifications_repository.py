@@ -7,6 +7,7 @@ from src.db.repositories.base_repository import BaseRepository
 
 class NotificationsRepository(BaseRepository):
     def get_notifications_for_user(self, user_id: str) -> list[NotificationRecord]:
+        """Return user notifications ordered so newest side effects are checked last-to-first predictably."""
         state = self.db_client.read_state()
         matching_notifications = [
             item for item in state.get("notifications", []) if item.get("userId") == user_id
@@ -24,6 +25,7 @@ class NotificationsRepository(BaseRepository):
         transaction_id: str,
         status: str,
     ) -> NotificationRecord | None:
+        """Find the unread notification for one transaction side effect without leaking raw lowdb access to tests."""
         notifications = self.get_notifications_for_user(user_id)
         matching_notifications = [
             item
@@ -71,6 +73,7 @@ class NotificationsRepository(BaseRepository):
 
     @staticmethod
     def _map_notification_record(item: dict[str, object]) -> NotificationRecord:
+        """Normalize lowdb notification records so tests can assert one stable model."""
         status = item.get("status")
         if status is None:
             if item.get("commentId"):

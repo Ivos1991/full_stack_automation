@@ -8,12 +8,15 @@ from src.framework.reporting.allure_helpers import attach_json
 
 @pytest.mark.db
 class TestTransactionsRepository:
+    """DB coverage for feed reconstruction through the transactions repository."""
+
     def test_seeded_user_public_feed_can_be_read_from_repository(
         self,
         require_live_rwa_environment,
         seeded_business_user,
         connected_transactions_repository,
     ):
+        """Read the seeded public feed from lowdb and verify the repository returns stable feed items."""
         public_feed = connected_transactions_repository.get_public_feed_for_user(
             user_id=seeded_business_user["id"],
             page=1,

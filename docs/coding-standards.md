@@ -192,7 +192,28 @@ Minimum useful context examples:
 - API: method, endpoint, payload summary, response status
 - DB: repository method, key parameters, result summary
 
-## K. CI/CD Compatibility
+## K. Comments And Docstrings
+
+- prefer self-explanatory code first
+- do not add docstrings or comments to obvious one-line methods just for coverage
+- add a short docstring when a method has hidden behavior, environment assumptions, or non-obvious side effects
+- add a short code comment before branching or mutation logic only when the intent would otherwise be hard to infer quickly
+- keep docstrings practical and implementation-aware, not academic
+- use comments to explain why, not to restate what the next line already says
+
+Good examples:
+
+- a fixture that resets backend state before and after the test
+- a settings resolver that falls back through multiple runtime sources
+- a mapper that normalizes inconsistent API payload shapes
+
+Weak examples:
+
+- docstrings on every trivial getter
+- comments that just restate assignments
+- large block comments describing code that should instead be simplified
+
+## L. CI/CD Compatibility
 
 - all tests must be runnable headless
 - no local-machine assumptions are allowed
@@ -200,7 +221,7 @@ Minimum useful context examples:
 - secrets must not be hardcoded
 - tests should be selectable by path, marker, or suite
 
-## L. Performance and Maintainability
+## M. Performance and Maintainability
 
 - avoid unnecessary abstraction
 - avoid deep inheritance chains
@@ -219,6 +240,7 @@ Every new module or test should be reviewed against these questions:
 - is teardown owned by the creator
 - are assertions focused on behavior
 - is the abstraction justified
+- is a docstring or short comment needed to explain non-obvious behavior
 
 ## Summary
 

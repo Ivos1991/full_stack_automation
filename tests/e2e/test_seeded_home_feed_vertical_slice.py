@@ -8,6 +8,8 @@ from src.framework.reporting.allure_helpers import attach_json
 
 @pytest.mark.e2e
 class TestSeededHomeFeedVerticalSlice:
+    """End-to-end coverage for the seeded landing-feed slice across UI, API, and lowdb."""
+
     def test_seeded_home_feed_vertical_slice(
         self,
         require_live_rwa_environment,
@@ -19,6 +21,7 @@ class TestSeededHomeFeedVerticalSlice:
         seeded_business_user,
         seeded_business_user_credentials,
     ):
+        """Sign in as the seeded user, validate the visible feed, then confirm the same state through API and repository layers."""
         auth_service.login(seeded_business_user_credentials)
         api_feed = transactions_service.get_public_feed(page=1, limit=10)
         db_feed = connected_transactions_repository.get_public_feed_for_user(

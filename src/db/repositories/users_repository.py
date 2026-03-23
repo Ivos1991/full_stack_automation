@@ -21,6 +21,7 @@ class UsersRepository(BaseRepository):
         return self.db_client.fetch_one(USER_BY_USERNAME_QUERY, (username,))
 
     def create_user(self, user_data: GeneratedUserData) -> dict[str, object]:
+        """Create a lowdb user record for isolated repository validation outside the live backend path."""
         created_at = datetime.now(UTC).isoformat()
 
         def mutate(state: dict[str, list[dict[str, object]]]) -> dict[str, object]:
@@ -45,7 +46,9 @@ class UsersRepository(BaseRepository):
         return self.db_client.mutate_state(mutate)
 
     def delete_user_and_related_data(self, user_id: str) -> None:
+        """Remove a user and its directly related lowdb records for isolated repository tests only."""
         def mutate(state: dict[str, list[dict[str, object]]]) -> None:
+            # Collect related ids first so dependent records can be removed in one deterministic mutation pass.
             bank_account_ids = {
                 item["id"]
                 for item in state.get("bankaccounts", [])

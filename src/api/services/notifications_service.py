@@ -11,6 +11,7 @@ class NotificationsService:
         self.client = client
 
     def get_notifications(self, page: int = 1, limit: int = 10) -> list[NotificationRecord]:
+        """Return normalized notifications despite the RWA endpoint using more than one response shape."""
         response = self.client.get_notifications(page=page, limit=limit)
         assert_that(response.ok, "Expected notifications HTTP response to be OK").is_true()
 
@@ -28,6 +29,7 @@ class NotificationsService:
         *,
         status: str,
     ) -> NotificationRecord | None:
+        """Filter the normalized notification feed down to the unread record for one transaction side effect."""
         notifications = self.get_notifications()
         for item in notifications:
             if item.transaction_id == transaction_id and item.status == status and item.is_read is False:
@@ -36,6 +38,7 @@ class NotificationsService:
 
     @staticmethod
     def _map_notification_record(item: dict[str, object]) -> NotificationRecord:
+        """Normalize comment/like/payment notifications into one internal model."""
         transaction = item.get("transaction")
         transaction_id = item.get("transactionId")
         if transaction_id is None and isinstance(transaction, dict):
@@ -43,6 +46,7 @@ class NotificationsService:
 
         status = item.get("status")
         if status is None:
+            # The real RWA payload distinguishes some notification types by related entity ids instead of status.
             if item.get("commentId"):
                 status = "comment"
             elif item.get("likeId"):
