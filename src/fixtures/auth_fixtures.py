@@ -123,3 +123,14 @@ def seeded_send_money_contact(
         "Expected explicit seeded contact relationship for send-money slice",
     ).is_true()
     return contact_record
+
+
+@pytest.fixture(scope="function")
+def seeded_send_money_contact_credentials(
+    seeded_business_data_state,
+    seeded_send_money_contact,
+) -> AuthCredentials:
+    return AuthCredentials(
+        username=seeded_send_money_contact["username"],
+        password=os.getenv("RWA_PASSWORD", "s3cret"),
+    )

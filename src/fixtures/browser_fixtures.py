@@ -20,13 +20,19 @@ def playwright_instance() -> Generator[Any, None, None]:
     except ImportError as error:  # pragma: no cover - depends on local environment
         pytest.skip(f"Playwright is not installed in the current environment: {error}")
 
-    with sync_playwright() as playwright:
-        yield playwright
+    try:
+        with sync_playwright() as playwright:
+            yield playwright
+    except PermissionError as error:  # pragma: no cover - depends on local Windows process permissions
+        pytest.skip(f"Playwright could not start in the current environment: {error}")
 
 
 @pytest.fixture(scope="session")
 def browser(playwright_instance: Any, settings: Settings) -> Generator[Any, None, None]:
-    browser = playwright_instance.chromium.launch(headless=settings.headless)
+    try:
+        browser = playwright_instance.chromium.launch(headless=settings.headless)
+    except PermissionError as error:  # pragma: no cover - depends on local Windows process permissions
+        pytest.skip(f"Chromium could not launch in the current environment: {error}")
     yield browser
     browser.close()
 
