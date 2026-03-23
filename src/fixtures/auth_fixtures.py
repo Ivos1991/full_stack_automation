@@ -51,6 +51,16 @@ def transaction_detail_page(page, settings: Settings):
 
 
 @pytest.fixture(scope="function")
+def notifications_page(page, settings: Settings):
+    try:
+        from src.ui.pages.notifications_page import NotificationsPage
+    except ImportError as error:  # pragma: no cover - depends on local environment
+        pytest.skip(f"Playwright UI dependencies are unavailable: {error}")
+
+    return NotificationsPage(page=page, base_url=settings.base_url)
+
+
+@pytest.fixture(scope="function")
 def require_live_rwa_environment(settings: Settings, db_client) -> None:
     """Verify the external RWA frontend, backend, and lowdb file are reachable for the test, then close the DB client."""
     try:

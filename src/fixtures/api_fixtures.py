@@ -198,3 +198,13 @@ def seeded_comment_notification(
         seeded_created_comment.transaction_id,
         status="comment",
     )
+
+
+@pytest.fixture(scope="function")
+def seeded_unread_comment_notification(
+    seeded_comment_notification: NotificationRecord | None,
+) -> NotificationRecord:
+    """Expose the receiver-side unread comment notification as the stable read-transition source of truth."""
+    if seeded_comment_notification is None:  # pragma: no cover - defensive guard
+        raise RuntimeError("Expected receiver-side unread comment notification before validating read transition.")
+    return seeded_comment_notification

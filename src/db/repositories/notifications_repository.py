@@ -6,6 +6,14 @@ from src.db.repositories.base_repository import BaseRepository
 
 
 class NotificationsRepository(BaseRepository):
+    def get_notification_by_id(self, notification_id: str) -> NotificationRecord | None:
+        """Return one normalized notification so tests can assert a specific record before and after transition."""
+        state = self.db_client.read_state()
+        for item in state.get("notifications", []):
+            if item.get("id") == notification_id:
+                return self._map_notification_record(item)
+        return None
+
     def get_notifications_for_user(self, user_id: str) -> list[NotificationRecord]:
         """Return user notifications ordered so newest side effects are checked last-to-first predictably."""
         state = self.db_client.read_state()

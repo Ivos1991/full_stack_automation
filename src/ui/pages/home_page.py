@@ -15,7 +15,9 @@ class HomePage(BasePage):
         self.sidenav_home_locator = self.page.locator("[data-test='sidenav-home']")
         self.sidenav_user_balance_locator = self.page.locator("[data-test='sidenav-user-balance']")
         self.new_transaction_button_locator = self.page.locator("[data-test='nav-top-new-transaction']")
+        self.top_notifications_link_locator = self.page.locator("[data-test='nav-top-notifications-link']")
         self.personal_tab_locator = self.page.locator("[data-test='nav-personal-tab']")
+        self.sidenav_signout_locator = self.page.locator("[data-test='sidenav-signout']")
         self.user_onboarding_dialog_locator = self.page.locator("[data-test='user-onboarding-dialog']")
         self.user_onboarding_title_locator = self.page.locator("[data-test='user-onboarding-dialog-title']")
 
@@ -52,6 +54,14 @@ class HomePage(BasePage):
         self.click(self.personal_tab_locator)
         expect(self.page).to_have_url(re.compile(r".*/personal/?$"))
         expect(self.transaction_list_locator).to_be_visible()
+
+    def open_notifications(self) -> None:
+        self.click(self.top_notifications_link_locator)
+        expect(self.page).to_have_url(re.compile(r".*/notifications/?$"))
+
+    def sign_out(self) -> None:
+        self.click(self.sidenav_signout_locator)
+        expect(self.page).to_have_url(re.compile(r".*/signin/?$"))
 
     def get_user_balance_text(self) -> str:
         expect(self.sidenav_user_balance_locator).to_be_visible()

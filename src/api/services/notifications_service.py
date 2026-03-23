@@ -3,7 +3,7 @@ from __future__ import annotations
 from assertpy import assert_that
 
 from src.api.clients.notifications_client import NotificationsClient
-from src.api.schemas.notification_models import NotificationRecord
+from src.api.schemas.notification_models import NotificationRecord, NotificationUpdatePayload
 
 
 class NotificationsService:
@@ -35,6 +35,17 @@ class NotificationsService:
             if item.transaction_id == transaction_id and item.status == status and item.is_read is False:
                 return item
         return None
+
+    def mark_notification_as_read(self, notification_id: str) -> None:
+        """Mark one notification as read through the real API transition path."""
+        response = self.client.update_notification(
+            notification_id=notification_id,
+            payload=NotificationUpdatePayload(is_read=True),
+        )
+        assert_that(
+            response.status_code,
+            "Expected notification read-state update to return the backend success status",
+        ).is_equal_to(204)
 
     @staticmethod
     def _map_notification_record(item: dict[str, object]) -> NotificationRecord:
