@@ -6,7 +6,7 @@ The new framework is a standalone automation solution for Cypress Real World App
 
 - Playwright + pytest for UI
 - `requests` for API validation
-- PostgreSQL for DB validation
+- lowdb-backed repository validation for the real RWA implementation path
 - Allure for reporting
 - GitHub Actions for CI/CD
 
@@ -131,6 +131,7 @@ Responsibilities:
 - generic API and DB clients
 - shared models and assertions
 - utility helpers
+- explicit runtime resolution for external RWA dependency configuration
 
 Rules:
 
@@ -181,18 +182,19 @@ Rules:
 
 Purpose:
 
-- validate backend persistence and data integrity through PostgreSQL
+- validate backend persistence and data integrity through the current data-store implementation
 
 Sub-layers:
 
-- `queries/` for SQL ownership
+- `queries/` for query ownership where applicable
 - `repositories/` for structured data access
 
 Rules:
 
-- tests do not contain raw SQL
+- tests do not contain raw data-store access
 - repositories return meaningful structured data
 - DB layer is validation-focused, not an alternative business service layer
+- when the real app uses lowdb, repository methods should encapsulate file-backed record access the same way a SQL repository would encapsulate queries
 
 ## Fixtures Layer
 
@@ -259,6 +261,12 @@ Examples:
 - CI-specific runtime options
 
 Keep config generic, small, and explicit.
+
+## Documentation Expectations
+
+- non-obvious runtime resolution, fixture orchestration, and payload normalization paths should use short docstrings
+- comments should be rare and should clarify hidden intent or side effects
+- simple page-object actions and obvious mappers should stay mostly self-documenting
 
 ## Layer Boundaries
 

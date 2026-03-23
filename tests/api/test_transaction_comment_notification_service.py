@@ -8,6 +8,8 @@ from src.framework.reporting.allure_helpers import attach_json
 
 @pytest.mark.api
 class TestTransactionCommentNotificationService:
+    """API coverage for notification side effects triggered by transaction comments."""
+
     def test_transaction_comment_creates_unread_receiver_notification_via_api(
         self,
         require_live_rwa_environment,
@@ -17,6 +19,7 @@ class TestTransactionCommentNotificationService:
         seeded_send_money_contact,
         seeded_send_money_contact_credentials,
     ):
+        """Create the comment through setup fixtures, then authenticate as the receiver and verify the unread notification."""
         auth_service.login(seeded_send_money_contact_credentials)
         notification = notifications_service.get_unread_notification_for_transaction(
             seeded_created_comment.transaction_id,

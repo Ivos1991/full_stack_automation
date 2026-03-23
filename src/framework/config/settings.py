@@ -27,6 +27,7 @@ def _get_int(name: str, default: int) -> int:
 
 
 def _read_key_from_env_file(path: Path, key: str) -> str | None:
+    """Read a single key from the external RWA .env file when path-based config is in use."""
     if not path.exists():
         return None
 
@@ -43,6 +44,7 @@ def _read_key_from_env_file(path: Path, key: str) -> str | None:
 
 
 def _resolve_rwa_root_path() -> Path | None:
+    """Resolve the optional external RWA checkout root without requiring it to exist yet."""
     raw_path = os.getenv("RWA_ROOT_PATH")
     if not raw_path:
         return None
@@ -52,6 +54,7 @@ def _resolve_rwa_root_path() -> Path | None:
 
 
 def _extract_runtime_backend_port(runtime_config_path: Path) -> int | None:
+    """Read the live backend port that the RWA backend writes for runtime consumers."""
     if not runtime_config_path.exists():
         return None
 
@@ -65,6 +68,7 @@ def _extract_runtime_backend_port(runtime_config_path: Path) -> int | None:
 
 
 def _can_reach_rwa_api(base_url: str) -> bool:
+    """Probe a candidate backend URL using the login route the framework already depends on."""
     try:
         response = requests.post(
             f"{base_url.rstrip('/')}/login",
@@ -78,6 +82,7 @@ def _can_reach_rwa_api(base_url: str) -> bool:
 
 
 def _resolve_base_url() -> str:
+    """Prefer explicit base URL, otherwise infer the frontend port from the external RWA checkout."""
     explicit_base_url = os.getenv("BASE_URL")
     if explicit_base_url:
         return explicit_base_url.rstrip("/")
@@ -90,6 +95,7 @@ def _resolve_base_url() -> str:
 
 
 def _resolve_api_base_url(base_url: str) -> str:
+    """Resolve the backend URL from env, runtime config, and known RWA fallback ports."""
     explicit_api_base_url = os.getenv("API_BASE_URL")
     if explicit_api_base_url:
         return explicit_api_base_url.rstrip("/")
@@ -137,6 +143,7 @@ class Settings:
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
+    """Build and cache the effective framework settings for the current process."""
     rwa_root = _resolve_rwa_root_path()
     base_url = _resolve_base_url()
     api_base_url = _resolve_api_base_url(base_url)

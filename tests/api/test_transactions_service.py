@@ -8,6 +8,8 @@ from src.framework.reporting.allure_helpers import attach_json
 
 @pytest.mark.api
 class TestTransactionsService:
+    """API coverage for seeded transaction feed retrieval."""
+
     def test_seeded_user_public_feed_endpoint_returns_transactions(
         self,
         require_live_rwa_environment,
@@ -15,6 +17,7 @@ class TestTransactionsService:
         transactions_service,
         seeded_business_user_credentials,
     ):
+        """Authenticate as a seeded user and verify the public feed contract returns visible transactions."""
         auth_service.login(seeded_business_user_credentials)
 
         public_feed = transactions_service.get_public_feed(page=1, limit=10)

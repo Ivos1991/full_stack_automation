@@ -8,12 +8,15 @@ from src.framework.reporting.allure_helpers import attach_json
 
 @pytest.mark.db
 class TestTransactionDetailRepository:
+    """DB coverage for persisted transaction-detail data."""
+
     def test_transaction_detail_repository_returns_the_created_payment(
         self,
         require_live_rwa_environment,
         connected_transactions_repository,
         seeded_sent_payment,
     ):
+        """Create a seeded payment through fixtures and verify the persisted lowdb transaction matches it."""
         persisted_transaction = connected_transactions_repository.get_transaction_by_id(seeded_sent_payment.id)
 
         attach_json(

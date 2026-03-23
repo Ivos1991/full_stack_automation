@@ -8,6 +8,8 @@ from src.framework.reporting.allure_helpers import attach_json
 
 @pytest.mark.ui
 class TestSeededHomeFeed:
+    """UI coverage for the seeded user's authenticated landing feed."""
+
     def test_seeded_user_lands_on_transaction_feed(
         self,
         require_live_rwa_environment,
@@ -15,6 +17,7 @@ class TestSeededHomeFeed:
         home_page,
         seeded_business_user_credentials,
     ):
+        """Sign in as the seeded user and verify the transaction feed renders after the UI login flow."""
         sign_in_page.go_to()
         sign_in_page.sign_in(
             username=seeded_business_user_credentials.username,

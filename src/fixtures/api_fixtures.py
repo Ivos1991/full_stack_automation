@@ -129,6 +129,7 @@ def created_user(
     connected_users_repository,
     generated_user_data: GeneratedUserData,
 ) -> CreatedUser:
+    """Create a real RWA user through the API and reset the seeded baseline after the test."""
     test_data_service.seed_database()
     created_user_record = users_service.create_user(generated_user_data)
 
@@ -139,8 +140,7 @@ def created_user(
     try:
         yield created_user_record
     finally:
-        # Reset through the backend-supported testData route so the running app and lowdb file
-        # return to the same seeded baseline after each test.
+        # Reset through the backend-supported route so the running app and lowdb file stay aligned.
         test_data_service.seed_database()
 
 
@@ -152,6 +152,7 @@ def seeded_sent_payment(
     seeded_business_user_credentials: AuthCredentials,
     seeded_send_money_payment,
 ) -> TransactionRecord:
+    """Create a seeded payment through the API so downstream slices share one transaction source of truth."""
     auth_service.login(seeded_business_user_credentials)
     created_payment = transactions_service.create_payment(seeded_send_money_payment)
     return transactions_service.get_transaction_by_id(created_payment.id)
@@ -166,6 +167,7 @@ def seeded_created_comment(
     seeded_sent_payment: TransactionRecord,
     seeded_transaction_comment_payload: CommentCreatePayload,
 ) -> CommentRecord:
+    """Create the seeded transaction comment through the API before notification or detail assertions."""
     auth_service.login(seeded_business_user_credentials)
     comments = comments_service.create_comment(
         transaction_id=seeded_sent_payment.id,
@@ -190,6 +192,7 @@ def seeded_comment_notification(
     seeded_created_comment: CommentRecord,
     seeded_send_money_contact_credentials: AuthCredentials,
 ) -> NotificationRecord | None:
+    """Read the receiver-side unread comment notification after the sender comment is created."""
     auth_service.login(seeded_send_money_contact_credentials)
     return notifications_service.get_unread_notification_for_transaction(
         seeded_created_comment.transaction_id,

@@ -18,6 +18,7 @@ def db_client(settings: Settings) -> LowDBJSONClient:
 
 @pytest.fixture(scope="function")
 def connected_db_client(db_client: LowDBJSONClient) -> LowDBJSONClient:
+    """Open the lowdb file for the test and close the client during teardown."""
     db_client.connect()
     yield db_client
     db_client.close()

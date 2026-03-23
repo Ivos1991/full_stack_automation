@@ -5,8 +5,11 @@ import pytest
 
 @pytest.mark.ui
 class TestSignInPage:
+    """UI coverage for dynamic-user sign-in."""
+
     def test_user_can_sign_in_with_dynamic_credentials(
             self, require_live_rwa_environment, sign_in_page, home_page, auth_credentials):
+        """Create a dynamic user through fixtures, sign in through the UI, and verify the first authenticated landing state."""
         sign_in_page.go_to()
         sign_in_page.sign_in(
             username=auth_credentials.username,

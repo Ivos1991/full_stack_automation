@@ -14,6 +14,8 @@ def _format_usd_from_cents(balance_cents: int) -> str:
 
 @pytest.mark.e2e
 class TestSeededSendMoneyVerticalSlice:
+    """End-to-end coverage for the seeded send-money slice across UI, API, and lowdb."""
+
     def test_seeded_send_money_vertical_slice(
         self,
         require_live_rwa_environment,
@@ -32,6 +34,7 @@ class TestSeededSendMoneyVerticalSlice:
         seeded_send_money_contact,
         seeded_send_money_payment,
     ):
+        """Create a payment in the UI, then validate the resulting transaction, balances, and notification through API and DB."""
         expected_sender_balance_after_payment = seeded_business_user["balance"] - seeded_send_money_payment.amount_cents
         expected_sender_balance_text = _format_usd_from_cents(expected_sender_balance_after_payment)
         expected_receiver_balance_after_payment = (

@@ -8,6 +8,8 @@ from src.framework.reporting.allure_helpers import attach_json
 
 @pytest.mark.db
 class TestTransactionCommentNotificationRepository:
+    """DB coverage for comment-triggered notification side effects."""
+
     def test_transaction_comment_persists_unread_receiver_notification(
         self,
         require_live_rwa_environment,
@@ -15,6 +17,7 @@ class TestTransactionCommentNotificationRepository:
         seeded_created_comment,
         seeded_send_money_contact,
     ):
+        """Create the comment through fixtures and verify the receiver-side unread notification in lowdb."""
         notification = connected_notifications_repository.get_unread_comment_notification_by_user_and_transaction(
             user_id=seeded_send_money_contact["id"],
             transaction_id=seeded_created_comment.transaction_id,

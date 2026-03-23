@@ -8,12 +8,15 @@ from src.framework.reporting.allure_helpers import attach_json
 
 @pytest.mark.api
 class TestTransactionDetailService:
+    """API coverage for transaction-detail retrieval after a seeded payment is created."""
+
     def test_transaction_detail_api_returns_the_created_payment(
         self,
         require_live_rwa_environment,
         transactions_service,
         seeded_sent_payment,
     ):
+        """Use the fixture-created payment as the source of truth and verify the detail endpoint returns the same record."""
         transaction_detail = transactions_service.get_transaction_by_id(seeded_sent_payment.id)
 
         attach_json(

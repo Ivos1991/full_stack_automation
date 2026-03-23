@@ -14,6 +14,8 @@ def _format_usd_from_cents(balance_cents: int) -> str:
 
 @pytest.mark.ui
 class TestSeededSendMoneyPage:
+    """UI coverage for the seeded send-money flow."""
+
     def test_seeded_user_can_send_money_from_ui(
         self,
         require_live_rwa_environment,
@@ -26,6 +28,7 @@ class TestSeededSendMoneyPage:
         seeded_send_money_contact,
         seeded_send_money_payment,
     ):
+        """Log in as the seeded sender, create a payment in the UI, and verify visible success and balance state."""
         expected_balance_after_payment = _format_usd_from_cents(
             seeded_business_user["balance"] - seeded_send_money_payment.amount_cents
         )

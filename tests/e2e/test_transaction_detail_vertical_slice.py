@@ -10,6 +10,8 @@ from src.framework.reporting.allure_helpers import attach_file, attach_json
 
 @pytest.mark.e2e
 class TestTransactionDetailVerticalSlice:
+    """End-to-end coverage for transaction-detail validation after a seeded payment is created."""
+
     def test_transaction_detail_vertical_slice_for_ui_created_payment(
         self,
         require_live_rwa_environment,
@@ -26,6 +28,7 @@ class TestTransactionDetailVerticalSlice:
         seeded_send_money_contact,
         seeded_send_money_payment,
     ):
+        """Create a payment in the UI, open its detail page, and validate the same transaction through UI, API, and DB."""
         recipient_full_name = (
             f"{seeded_send_money_contact['firstName']} {seeded_send_money_contact['lastName']}"
         )

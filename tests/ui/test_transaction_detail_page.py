@@ -10,6 +10,8 @@ from src.framework.reporting.allure_helpers import attach_file, attach_json
 
 @pytest.mark.ui
 class TestTransactionDetailPage:
+    """UI coverage for opening and validating transaction detail."""
+
     def test_seeded_sent_payment_can_be_opened_in_transaction_detail_ui(
         self,
         require_live_rwa_environment,
@@ -20,6 +22,7 @@ class TestTransactionDetailPage:
         seeded_business_user_credentials,
         seeded_sent_payment,
     ):
+        """Reuse the fixture-created payment, navigate from the feed to detail, and verify the visible transaction fields."""
         sign_in_page.go_to()
         sign_in_page.sign_in(
             username=seeded_business_user_credentials.username,
