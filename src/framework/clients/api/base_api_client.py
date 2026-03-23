@@ -37,3 +37,6 @@ class BaseAPIClient:
 
     def post(self, path: str, **kwargs: Any) -> requests.Response:
         return self.request("POST", path, **kwargs)
+
+    def patch(self, path: str, **kwargs: Any) -> requests.Response:
+        return self.request("PATCH", path, **kwargs)
