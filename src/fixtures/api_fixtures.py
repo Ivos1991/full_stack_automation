@@ -1,29 +1,25 @@
 from __future__ import annotations
-
 import os
-
 import pytest
 import requests
-
 from src.api.clients.auth_client import AuthClient
-from src.api.clients.comments_client import CommentsClient
-from src.api.clients.notifications_client import NotificationsClient
-from src.api.clients.test_data_client import TestDataClient
-from src.api.clients.transactions_client import TransactionsClient
-from src.api.clients.users_client import UsersClient
-from src.api.schemas.auth_models import AuthCredentials
-from src.api.schemas.comment_models import CommentCreatePayload, CommentRecord
-from src.api.schemas.notification_models import NotificationRecord
-from src.api.schemas.transaction_models import TransactionRecord
-from src.api.schemas.user_models import CreatedUser, GeneratedUserData
-from src.api.services.auth_service import AuthService
-from src.api.services.comments_service import CommentsService
-from src.api.services.notifications_service import NotificationsService
-from src.api.services.test_data_service import TestDataService
-from src.api.services.transactions_service import TransactionsService
-from src.api.services.users_service import UsersService
 from src.framework.config.settings import Settings
-
+from src.api.clients.users_client import UsersClient
+from src.api.services.auth_service import AuthService
+from src.api.schemas.auth_models import AuthCredentials
+from src.api.services.users_service import UsersService
+from src.api.clients.comments_client import CommentsClient
+from src.api.clients.test_data_client import TestDataClient
+from src.api.services.comments_service import CommentsService
+from src.api.services.test_data_service import TestDataService
+from src.api.schemas.transaction_models import TransactionRecord
+from src.api.clients.transactions_client import TransactionsClient
+from src.api.schemas.notification_models import NotificationRecord
+from src.api.clients.notifications_client import NotificationsClient
+from src.api.services.transactions_service import TransactionsService
+from src.api.schemas.user_models import CreatedUser, GeneratedUserData
+from src.api.services.notifications_service import NotificationsService
+from src.api.schemas.comment_models import CommentCreatePayload, CommentRecord
 
 @pytest.fixture(scope="function")
 def api_session() -> requests.Session:

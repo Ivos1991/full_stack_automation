@@ -1,8 +1,6 @@
 from __future__ import annotations
-
-from assertpy import assert_that
 import pytest
-
+from assertpy import assert_that
 
 @pytest.mark.e2e
 class TestSignInVerticalSlice:

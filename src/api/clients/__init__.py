@@ -1,9 +1,9 @@
 from .auth_client import AuthClient
+from .users_client import UsersClient
 from .comments_client import CommentsClient
-from .notifications_client import NotificationsClient
 from .test_data_client import TestDataClient
 from .transactions_client import TransactionsClient
-from .users_client import UsersClient
+from .notifications_client import NotificationsClient
 
 __all__ = [
     "AuthClient",

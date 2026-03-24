@@ -1,16 +1,12 @@
 from __future__ import annotations
-
-from pathlib import Path
-import shutil
-from tempfile import TemporaryDirectory
-
-from assertpy import assert_that
 import pytest
-
+import shutil
+from pathlib import Path
+from assertpy import assert_that
+from tempfile import TemporaryDirectory
+from src.framework.config.settings import get_settings
 from src.db.repositories.users_repository import UsersRepository
 from src.framework.clients.db.lowdb_json_client import LowDBJSONClient
-from src.framework.config.settings import get_settings
-
 
 @pytest.mark.db
 class TestUsersRepository:

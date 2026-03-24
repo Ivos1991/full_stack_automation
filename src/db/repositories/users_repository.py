@@ -1,13 +1,10 @@
 from __future__ import annotations
-
-from base64 import urlsafe_b64encode
-from datetime import UTC, datetime
 from uuid import uuid4
-
+from datetime import UTC, datetime
+from base64 import urlsafe_b64encode
 from src.api.schemas.user_models import GeneratedUserData
-from src.db.queries.users_queries import USER_BY_USERNAME_QUERY
 from src.db.repositories.base_repository import BaseRepository
-
+from src.db.queries.users_queries import USER_BY_USERNAME_QUERY
 
 class UsersRepository(BaseRepository):
     def get_user_by_id(self, user_id: str) -> dict[str, object] | None:

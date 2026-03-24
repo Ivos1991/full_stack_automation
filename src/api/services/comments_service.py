@@ -1,10 +1,7 @@
 from __future__ import annotations
-
 from assertpy import assert_that
-
 from src.api.clients.comments_client import CommentsClient
 from src.api.schemas.comment_models import CommentCreatePayload, CommentRecord
-
 
 class CommentsService:
     def __init__(self, client: CommentsClient) -> None:

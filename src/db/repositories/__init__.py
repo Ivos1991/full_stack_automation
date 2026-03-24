@@ -1,9 +1,9 @@
 from .base_repository import BaseRepository
+from .users_repository import UsersRepository
 from .comments_repository import CommentsRepository
 from .contacts_repository import ContactsRepository
-from .notifications_repository import NotificationsRepository
 from .transactions_repository import TransactionsRepository
-from .users_repository import UsersRepository
+from .notifications_repository import NotificationsRepository
 
 __all__ = [
     "BaseRepository",

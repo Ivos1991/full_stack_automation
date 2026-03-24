@@ -1,13 +1,10 @@
 from __future__ import annotations
-
-from collections.abc import Generator
-from pathlib import Path
-import subprocess
 import sys
-from typing import TYPE_CHECKING, Any
-
 import pytest
-
+import subprocess
+from pathlib import Path
+from collections.abc import Generator
+from typing import TYPE_CHECKING, Any
 from src.framework.config.settings import Settings
 from src.framework.reporting.artifacts import ensure_artifact_dir
 

@@ -1,10 +1,7 @@
 from __future__ import annotations
-
 from assertpy import assert_that
-
 from src.api.clients.auth_client import AuthClient
 from src.api.schemas.auth_models import AuthCredentials
-
 
 class AuthService:
     def __init__(self, client: AuthClient) -> None:

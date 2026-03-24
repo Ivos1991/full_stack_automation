@@ -1,10 +1,7 @@
 from __future__ import annotations
-
 from requests import Response
-
-from src.api.schemas.notification_models import NotificationUpdatePayload
 from src.framework.clients.api.base_api_client import BaseAPIClient
-
+from src.api.schemas.notification_models import NotificationUpdatePayload
 
 class NotificationsClient(BaseAPIClient):
     def get_notifications(self, page: int = 1, limit: int = 10) -> Response:

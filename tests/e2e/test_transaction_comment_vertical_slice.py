@@ -1,12 +1,8 @@
 from __future__ import annotations
-
-from pathlib import Path
-
-from assertpy import assert_that, soft_assertions
 import pytest
-
+from pathlib import Path
+from assertpy import assert_that, soft_assertions
 from src.framework.reporting.allure_helpers import attach_file, attach_json
-
 
 @pytest.mark.e2e
 class TestTransactionCommentVerticalSlice:

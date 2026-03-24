@@ -1,7 +1,5 @@
 from __future__ import annotations
-
 import pytest
-
 
 @pytest.fixture(scope="function")
 def persisted_receiver_comment_notification_comment(seeded_created_comment):

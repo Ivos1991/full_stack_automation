@@ -1,7 +1,5 @@
 from __future__ import annotations
-
 import pytest
-
 
 @pytest.fixture(scope="function")
 def ui_created_transaction_comment_setup(

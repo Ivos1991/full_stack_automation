@@ -1,11 +1,8 @@
 from __future__ import annotations
-
 from assertpy import assert_that
-
-from src.api.clients.users_client import UsersClient
 from src.api.schemas.auth_models import CurrentUser
+from src.api.clients.users_client import UsersClient
 from src.api.schemas.user_models import CreatedUser, GeneratedUserData
-
 
 class UsersService:
     def __init__(self, client: UsersClient) -> None:

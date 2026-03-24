@@ -1,14 +1,11 @@
 from __future__ import annotations
-
 from assertpy import assert_that
-
 from src.api.clients.notifications_client import NotificationsClient
 from src.api.schemas.notification_models import (
     NotificationRecord,
     NotificationUpdatePayload,
     map_notification_record,
 )
-
 
 class NotificationsService:
     def __init__(self, client: NotificationsClient) -> None:

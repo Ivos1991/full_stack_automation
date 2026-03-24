@@ -1,12 +1,8 @@
 from __future__ import annotations
-
-from typing import Any
-
 import requests
-
+from typing import Any
 from src.framework.logging.logger import get_logger
 from src.framework.reporting.allure_helpers import attach_json
-
 
 class BaseAPIClient:
     def __init__(self, base_url: str, session: requests.Session | None = None, timeout: int = 30) -> None:

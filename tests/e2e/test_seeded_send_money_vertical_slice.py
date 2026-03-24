@@ -1,12 +1,8 @@
 from __future__ import annotations
-
-from pathlib import Path
-
-from assertpy import assert_that, soft_assertions
 import pytest
-
+from pathlib import Path
+from assertpy import assert_that, soft_assertions
 from src.framework.reporting.allure_helpers import attach_file, attach_json
-
 
 def _format_usd_from_cents(balance_cents: int) -> str:
     return f"${balance_cents / 100:,.2f}"

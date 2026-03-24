@@ -1,7 +1,5 @@
 from __future__ import annotations
-
 from assertpy import assert_that
-
 from src.api.clients.transactions_client import TransactionsClient
 from src.api.schemas.transaction_models import (
     TransactionCreatePayload,
@@ -10,7 +8,6 @@ from src.api.schemas.transaction_models import (
     TransactionFeedResponse,
     TransactionRecord,
 )
-
 
 class TransactionsService:
     def __init__(self, client: TransactionsClient) -> None:

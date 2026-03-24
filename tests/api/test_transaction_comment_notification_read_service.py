@@ -1,10 +1,7 @@
 from __future__ import annotations
-
-from assertpy import assert_that, soft_assertions
 import pytest
-
+from assertpy import assert_that, soft_assertions
 from src.framework.reporting.allure_helpers import attach_json
-
 
 @pytest.mark.api
 class TestTransactionCommentNotificationReadService:

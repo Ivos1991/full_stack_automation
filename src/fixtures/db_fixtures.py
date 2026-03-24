@@ -1,15 +1,12 @@
 from __future__ import annotations
-
 import pytest
-
+from src.framework.config.settings import Settings
+from src.db.repositories.users_repository import UsersRepository
 from src.db.repositories.comments_repository import CommentsRepository
 from src.db.repositories.contacts_repository import ContactsRepository
-from src.db.repositories.notifications_repository import NotificationsRepository
-from src.db.repositories.users_repository import UsersRepository
-from src.db.repositories.transactions_repository import TransactionsRepository
 from src.framework.clients.db.lowdb_json_client import LowDBJSONClient
-from src.framework.config.settings import Settings
-
+from src.db.repositories.transactions_repository import TransactionsRepository
+from src.db.repositories.notifications_repository import NotificationsRepository
 
 @pytest.fixture(scope="function")
 def db_client(settings: Settings) -> LowDBJSONClient:

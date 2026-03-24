@@ -1,9 +1,7 @@
 from __future__ import annotations
-
-from src.api.schemas.notification_models import NotificationRecord, map_notification_record
-from src.api.schemas.transaction_models import PaymentNotificationRecord
 from src.db.repositories.base_repository import BaseRepository
-
+from src.api.schemas.transaction_models import PaymentNotificationRecord
+from src.api.schemas.notification_models import NotificationRecord, map_notification_record
 
 class NotificationsRepository(BaseRepository):
     def get_notification_by_id(self, notification_id: str) -> NotificationRecord | None:

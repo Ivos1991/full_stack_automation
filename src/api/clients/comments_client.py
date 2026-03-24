@@ -1,10 +1,7 @@
 from __future__ import annotations
-
 from requests import Response
-
 from src.api.schemas.comment_models import CommentCreatePayload
 from src.framework.clients.api.base_api_client import BaseAPIClient
-
 
 class CommentsClient(BaseAPIClient):
     def get_comments(self, transaction_id: str) -> Response:

@@ -1,9 +1,6 @@
 from __future__ import annotations
-
 from uuid import uuid4
-
 from src.api.schemas.user_models import GeneratedUserData
-
 
 class UserFactory:
     def build_rwa_user(self) -> GeneratedUserData:

@@ -1,9 +1,6 @@
 from __future__ import annotations
-
 from assertpy import assert_that
-
 from src.api.clients.test_data_client import TestDataClient
-
 
 class TestDataService:
     def __init__(self, client: TestDataClient) -> None:

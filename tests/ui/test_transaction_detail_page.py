@@ -1,12 +1,8 @@
 from __future__ import annotations
-
-from pathlib import Path
-
-from assertpy import assert_that
 import pytest
-
+from pathlib import Path
+from assertpy import assert_that
 from src.framework.reporting.allure_helpers import attach_file, attach_json
-
 
 @pytest.mark.ui
 class TestTransactionDetailPage:
