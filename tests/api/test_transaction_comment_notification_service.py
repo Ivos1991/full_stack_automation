@@ -13,24 +13,26 @@ class TestTransactionCommentNotificationService:
     def test_transaction_comment_creates_unread_receiver_notification_via_api(
         self,
         require_live_rwa_environment,
-        auth_service,
-        notifications_service,
-        seeded_created_comment,
-        seeded_send_money_contact,
-        seeded_send_money_contact_credentials,
+        receiver_authenticated_notifications_service,
+        receiver_comment_notification_comment,
+        receiver_comment_notification_receiver_user_id,
+        receiver_comment_notification_unread,
     ):
         """Create the comment through setup fixtures, then authenticate as the receiver and verify the unread notification."""
-        auth_service.login(seeded_send_money_contact_credentials)
-        notification = notifications_service.get_unread_notification_for_transaction(
-            seeded_created_comment.transaction_id,
-            status="comment",
+        notification = next(
+            (
+                item
+                for item in receiver_authenticated_notifications_service.get_notifications()
+                if item.id == receiver_comment_notification_unread.id
+            ),
+            None,
         )
 
         attach_json(
             name="transaction-comment-notification-api",
             content={
-                "comment": seeded_created_comment.__dict__,
-                "receiver_user_id": seeded_send_money_contact["id"],
+                "comment": receiver_comment_notification_comment.__dict__,
+                "receiver_user_id": receiver_comment_notification_receiver_user_id,
                 "notification": notification.__dict__ if notification else None,
             },
         )
@@ -41,9 +43,9 @@ class TestTransactionCommentNotificationService:
             assert_that(
                 notification.transaction_id,
                 "Notification transaction id should match the commented transaction",
-            ).is_equal_to(seeded_created_comment.transaction_id)
+            ).is_equal_to(receiver_comment_notification_comment.transaction_id)
             assert_that(notification.user_id, "Notification should belong to the receiver").is_equal_to(
-                seeded_send_money_contact["id"]
+                receiver_comment_notification_receiver_user_id
             )
             assert_that(notification.status, "Notification should represent a comment event").is_equal_to("comment")
             assert_that(

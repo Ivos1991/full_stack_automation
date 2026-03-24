@@ -16,33 +16,30 @@ class TestTransactionCommentNotificationReadRepository:
         auth_service,
         notifications_service,
         connected_notifications_repository,
-        seeded_created_comment,
-        seeded_send_money_contact,
         seeded_send_money_contact_credentials,
-        seeded_unread_comment_notification,
+        persisted_receiver_comment_notification_comment,
+        persisted_receiver_comment_notification_receiver_user_id,
+        persisted_receiver_comment_notification_unread,
     ):
         """Verify the unread receiver notification exists first, then patch it through the live API and assert lowdb stores it as read."""
-        unread_before = connected_notifications_repository.get_unread_comment_notification_by_user_and_transaction(
-            user_id=seeded_send_money_contact["id"],
-            transaction_id=seeded_created_comment.transaction_id,
-        )
+        unread_before = persisted_receiver_comment_notification_unread
 
         auth_service.login(seeded_send_money_contact_credentials)
-        notifications_service.mark_notification_as_read(seeded_unread_comment_notification.id)
+        notifications_service.mark_notification_as_read(persisted_receiver_comment_notification_unread.id)
 
         unread_after = connected_notifications_repository.get_unread_comment_notification_by_user_and_transaction(
-            user_id=seeded_send_money_contact["id"],
-            transaction_id=seeded_created_comment.transaction_id,
+            user_id=persisted_receiver_comment_notification_receiver_user_id,
+            transaction_id=persisted_receiver_comment_notification_comment.transaction_id,
         )
         persisted_notification = connected_notifications_repository.get_notification_by_id(
-            seeded_unread_comment_notification.id
+            persisted_receiver_comment_notification_unread.id
         )
 
         attach_json(
             name="transaction-comment-notification-read-db",
             content={
-                "comment": seeded_created_comment.__dict__,
-                "receiver_user_id": seeded_send_money_contact["id"],
+                "comment": persisted_receiver_comment_notification_comment.__dict__,
+                "receiver_user_id": persisted_receiver_comment_notification_receiver_user_id,
                 "unread_before": unread_before.__dict__ if unread_before else None,
                 "unread_after": unread_after.__dict__ if unread_after else None,
                 "persisted_notification": persisted_notification.__dict__ if persisted_notification else None,
@@ -57,14 +54,17 @@ class TestTransactionCommentNotificationReadRepository:
             assert_that(
                 persisted_notification.id,
                 "The persisted record should match the updated unread notification id",
-            ).is_equal_to(seeded_unread_comment_notification.id)
-            assert_that(persisted_notification.user_id, "Persisted notification should belong to the receiver").is_equal_to(
-                seeded_send_money_contact["id"]
+            ).is_equal_to(persisted_receiver_comment_notification_unread.id)
+            assert_that(
+                persisted_notification.user_id,
+                "Persisted notification should belong to the receiver",
+            ).is_equal_to(
+                persisted_receiver_comment_notification_receiver_user_id
             )
             assert_that(
                 persisted_notification.transaction_id,
                 "Persisted notification should remain linked to the commented transaction",
-            ).is_equal_to(seeded_created_comment.transaction_id)
+            ).is_equal_to(persisted_receiver_comment_notification_comment.transaction_id)
             assert_that(
                 persisted_notification.status,
                 "Persisted notification should still normalize as a comment event",
