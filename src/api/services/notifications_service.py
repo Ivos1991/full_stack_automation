@@ -1,10 +1,11 @@
 from __future__ import annotations
-
 from assertpy import assert_that
-
 from src.api.clients.notifications_client import NotificationsClient
-from src.api.schemas.notification_models import NotificationRecord, NotificationUpdatePayload
-
+from src.api.schemas.notification_models import (
+    NotificationRecord,
+    NotificationUpdatePayload,
+    map_notification_record,
+)
 
 class NotificationsService:
     def __init__(self, client: NotificationsClient) -> None:
@@ -21,7 +22,7 @@ class NotificationsService:
         else:
             raw_notifications = payload
 
-        return [self._map_notification_record(item) for item in raw_notifications]
+        return [map_notification_record(item) for item in raw_notifications]
 
     def get_unread_notification_for_transaction(
         self,
@@ -47,30 +48,3 @@ class NotificationsService:
             "Expected notification read-state update to return the backend success status",
         ).is_equal_to(204)
 
-    @staticmethod
-    def _map_notification_record(item: dict[str, object]) -> NotificationRecord:
-        """Normalize comment/like/payment notifications into one internal model."""
-        transaction = item.get("transaction")
-        transaction_id = item.get("transactionId")
-        if transaction_id is None and isinstance(transaction, dict):
-            transaction_id = transaction.get("id")
-
-        status = item.get("status")
-        if status is None:
-            # The real RWA payload distinguishes some notification types by related entity ids instead of status.
-            if item.get("commentId"):
-                status = "comment"
-            elif item.get("likeId"):
-                status = "like"
-            elif item.get("transactionType"):
-                status = str(item["transactionType"])
-            else:
-                status = "unknown"
-
-        return NotificationRecord(
-            id=item["id"],
-            user_id=item["userId"],
-            transaction_id=transaction_id,
-            status=str(status),
-            is_read=item["isRead"],
-        )

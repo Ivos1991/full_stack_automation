@@ -1,16 +1,13 @@
 from __future__ import annotations
-
-from assertpy import assert_that
 import pytest
-
+from assertpy import assert_that
 from src.framework.reporting.allure_helpers import attach_json
-
 
 @pytest.mark.api
 class TestTransactionsService:
     """API coverage for seeded transaction feed retrieval."""
 
-    def test_seeded_user_public_feed_endpoint_returns_transactions(
+    def test_seeded_public_feed_request_expects_transactions_in_api_response(
         self,
         require_live_rwa_environment,
         auth_service,

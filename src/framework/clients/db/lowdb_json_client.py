@@ -1,14 +1,12 @@
 from __future__ import annotations
-
 import json
-from pathlib import Path
-from tempfile import NamedTemporaryFile
-from threading import RLock
 from typing import Any
-
-from src.framework.clients.db.base_db_client import BaseDBClient
+from pathlib import Path
+from threading import RLock
+from tempfile import NamedTemporaryFile
 from src.framework.logging.logger import get_logger
 from src.framework.reporting.allure_helpers import attach_json
+from src.framework.clients.db.base_db_client import BaseDBClient
 
 LOWDB_WRITE_LOCK = RLock()
 

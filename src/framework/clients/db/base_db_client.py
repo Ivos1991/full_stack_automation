@@ -1,7 +1,5 @@
 from __future__ import annotations
-
 from typing import Any
-
 
 class BaseDBClient:
     def __init__(self, host: str, port: int, database: str, user: str, password: str) -> None:

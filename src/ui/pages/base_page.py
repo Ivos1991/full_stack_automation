@@ -1,11 +1,7 @@
 from __future__ import annotations
-
 from pathlib import Path
-
 from playwright.sync_api import Locator, Page, expect
-
 from src.framework.reporting.allure_helpers import attach_text
-
 
 class BasePage:
     def __init__(self, page: Page, base_url: str) -> None:

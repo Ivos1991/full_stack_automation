@@ -1,9 +1,6 @@
 from __future__ import annotations
-
 from playwright.sync_api import expect
-
 from src.ui.pages.base_page import BasePage
-
 
 class SignInPage(BasePage):
     PATH = "/signin"

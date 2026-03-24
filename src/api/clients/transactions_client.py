@@ -1,10 +1,7 @@
 from __future__ import annotations
-
 from requests import Response
-
-from src.api.schemas.transaction_models import TransactionCreatePayload
 from src.framework.clients.api.base_api_client import BaseAPIClient
-
+from src.api.schemas.transaction_models import TransactionCreatePayload
 
 class TransactionsClient(BaseAPIClient):
     def get_personal_transactions(self, page: int = 1, limit: int = 10) -> Response:

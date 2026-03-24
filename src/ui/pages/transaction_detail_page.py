@@ -1,11 +1,7 @@
 from __future__ import annotations
-
 import re
-
 from playwright.sync_api import expect
-
 from src.ui.pages.base_page import BasePage
-
 
 class TransactionDetailPage(BasePage):
     def __init__(self, page, base_url: str) -> None:

@@ -1,19 +1,15 @@
 from __future__ import annotations
-
 import os
-
 import pytest
-
+from src.api.schemas.user_models import GeneratedUserData
+from src.testdata.factories.user_factory import UserFactory
 from src.api.schemas.comment_models import CommentCreatePayload
 from src.api.schemas.transaction_models import TransactionCreatePayload
-from src.api.schemas.user_models import GeneratedUserData
 from src.testdata.builders.payload_builders import (
     build_health_payload,
     build_seeded_send_money_payment_payload,
     build_seeded_transaction_comment_payload,
 )
-from src.testdata.factories.user_factory import UserFactory
-
 
 @pytest.fixture(scope="function")
 def user_factory() -> UserFactory:

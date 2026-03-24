@@ -1,7 +1,5 @@
 from __future__ import annotations
-
 from src.db.repositories.base_repository import BaseRepository
-
 
 class ContactsRepository(BaseRepository):
     def get_contact_user_ids_for_user(self, user_id: str) -> list[str]:

@@ -1,8 +1,6 @@
 from __future__ import annotations
-
 from src.api.schemas.comment_models import CommentRecord
 from src.db.repositories.base_repository import BaseRepository
-
 
 class CommentsRepository(BaseRepository):
     def get_comments_for_transaction(self, transaction_id: str) -> list[CommentRecord]:

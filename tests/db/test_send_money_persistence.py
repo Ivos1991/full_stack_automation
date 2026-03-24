@@ -1,16 +1,13 @@
 from __future__ import annotations
-
-from assertpy import assert_that, soft_assertions
 import pytest
-
+from assertpy import assert_that, soft_assertions
 from src.framework.reporting.allure_helpers import attach_json
-
 
 @pytest.mark.db
 class TestSendMoneyPersistence:
     """DB coverage for persisted send-money side effects in lowdb."""
 
-    def test_seeded_user_send_money_persists_transaction_balance_and_notification(
+    def test_seeded_send_money_persistence_expects_transaction_balance_and_notification(
         self,
         require_live_rwa_environment,
         auth_service,

@@ -1,13 +1,12 @@
 from __future__ import annotations
-from assertpy import assert_that
 import pytest
-
+from assertpy import assert_that
 
 @pytest.mark.ui
 class TestSignInPage:
     """UI coverage for dynamic-user sign-in."""
 
-    def test_user_can_sign_in_with_dynamic_credentials(
+    def test_dynamic_user_sign_in_expects_home_feed_loaded(
             self, require_live_rwa_environment, sign_in_page, home_page, auth_credentials):
         """Create a dynamic user through fixtures, sign in through the UI, and verify the first authenticated landing state."""
         sign_in_page.go_to()

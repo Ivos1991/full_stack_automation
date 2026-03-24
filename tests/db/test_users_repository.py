@@ -1,22 +1,18 @@
 from __future__ import annotations
-
-from pathlib import Path
-import shutil
-from tempfile import TemporaryDirectory
-
-from assertpy import assert_that
 import pytest
-
+import shutil
+from pathlib import Path
+from assertpy import assert_that
+from tempfile import TemporaryDirectory
+from src.framework.config.settings import get_settings
 from src.db.repositories.users_repository import UsersRepository
 from src.framework.clients.db.lowdb_json_client import LowDBJSONClient
-from src.framework.config.settings import get_settings
-
 
 @pytest.mark.db
 class TestUsersRepository:
     """DB coverage for user persistence in both live and isolated repository paths."""
 
-    def test_created_user_is_persisted_in_lowdb(self, require_live_rwa_environment, created_user, connected_users_repository):
+    def test_created_user_flow_expects_persisted_lowdb_record(self, require_live_rwa_environment, created_user, connected_users_repository):
         """Create a dynamic user through the live API fixtures and verify the user exists in the shared lowdb state."""
         persisted_user = connected_users_repository.get_user_by_username(created_user.username)
 
@@ -24,7 +20,7 @@ class TestUsersRepository:
         assert_that(persisted_user["id"], "Expected persisted user id").is_equal_to(created_user.id)
         assert_that(persisted_user["username"], "Expected persisted username").is_equal_to(created_user.username)
 
-    def test_repository_can_create_and_delete_user_in_isolated_lowdb_copy(self, generated_user_data):
+    def test_isolated_repository_user_lifecycle_expects_create_and_delete_to_persist(self, generated_user_data):
         """Copy the configured lowdb file to an isolated temp file, then validate create/delete without touching live state."""
         source_path = get_settings().rwa_data_file
         if not source_path:

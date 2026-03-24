@@ -1,16 +1,13 @@
 from __future__ import annotations
-
-from assertpy import assert_that, soft_assertions
 import pytest
-
+from assertpy import assert_that, soft_assertions
 from src.framework.reporting.allure_helpers import attach_json
-
 
 @pytest.mark.db
 class TestTransactionCommentRepository:
     """DB coverage for persisted transaction comments."""
 
-    def test_transaction_detail_comment_is_persisted_in_repository(
+    def test_transaction_comment_repository_query_expects_persisted_comment(
         self,
         require_live_rwa_environment,
         connected_comments_repository,

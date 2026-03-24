@@ -1,12 +1,8 @@
 from __future__ import annotations
-
-from pathlib import Path
-
-from assertpy import assert_that, soft_assertions
 import pytest
-
+from pathlib import Path
+from assertpy import assert_that, soft_assertions
 from src.framework.reporting.allure_helpers import attach_file, attach_json
-
 
 def _format_usd_from_cents(balance_cents: int) -> str:
     return f"${balance_cents / 100:,.2f}"
@@ -16,7 +12,7 @@ def _format_usd_from_cents(balance_cents: int) -> str:
 class TestSeededSendMoneyVerticalSlice:
     """End-to-end coverage for the seeded send-money slice across UI, API, and lowdb."""
 
-    def test_seeded_send_money_vertical_slice(
+    def test_seeded_send_money_vertical_slice_expects_ui_api_and_db_alignment(
         self,
         require_live_rwa_environment,
         settings,

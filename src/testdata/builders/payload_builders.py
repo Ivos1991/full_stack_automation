@@ -1,8 +1,6 @@
 from __future__ import annotations
-
 from src.api.schemas.comment_models import CommentCreatePayload
 from src.api.schemas.transaction_models import TransactionCreatePayload
-
 
 def build_health_payload(status: str = "ok") -> dict[str, str]:
     return {"status": status}

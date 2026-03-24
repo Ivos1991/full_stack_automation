@@ -1,14 +1,10 @@
 from __future__ import annotations
-
 import os
-import requests
-
 import pytest
+import requests
 from assertpy import assert_that
-
-from src.api.schemas.auth_models import AuthCredentials
 from src.framework.config.settings import Settings
-
+from src.api.schemas.auth_models import AuthCredentials
 
 @pytest.fixture(scope="function")
 def sign_in_page(page, settings: Settings):

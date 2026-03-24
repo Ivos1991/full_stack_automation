@@ -1,12 +1,8 @@
 from __future__ import annotations
-
-from pathlib import Path
-
-from assertpy import assert_that
 import pytest
-
+from pathlib import Path
+from assertpy import assert_that
 from src.framework.reporting.allure_helpers import attach_file, attach_json
-
 
 def _format_usd_from_cents(balance_cents: int) -> str:
     return f"${balance_cents / 100:,.2f}"
@@ -16,7 +12,7 @@ def _format_usd_from_cents(balance_cents: int) -> str:
 class TestSeededSendMoneyPage:
     """UI coverage for the seeded send-money flow."""
 
-    def test_seeded_user_can_send_money_from_ui(
+    def test_seeded_send_money_flow_expects_success_confirmation_and_balance_update(
         self,
         require_live_rwa_environment,
         settings,

@@ -1,18 +1,14 @@
 from __future__ import annotations
-
-from pathlib import Path
-
-from assertpy import assert_that
 import pytest
-
+from pathlib import Path
+from assertpy import assert_that
 from src.framework.reporting.allure_helpers import attach_file, attach_json
-
 
 @pytest.mark.ui
 class TestTransactionCommentPage:
     """UI coverage for transaction-detail comment creation."""
 
-    def test_seeded_sent_payment_can_receive_comment_in_transaction_detail_ui(
+    def test_transaction_detail_comment_creation_expects_comment_visible_in_ui(
         self,
         require_live_rwa_environment,
         settings,

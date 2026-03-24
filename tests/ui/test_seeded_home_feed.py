@@ -1,16 +1,13 @@
 from __future__ import annotations
-
-from assertpy import assert_that
 import pytest
-
+from assertpy import assert_that
 from src.framework.reporting.allure_helpers import attach_json
-
 
 @pytest.mark.ui
 class TestSeededHomeFeed:
     """UI coverage for the seeded user's authenticated landing feed."""
 
-    def test_seeded_user_lands_on_transaction_feed(
+    def test_seeded_user_home_feed_expects_transaction_list_loaded(
         self,
         require_live_rwa_environment,
         sign_in_page,

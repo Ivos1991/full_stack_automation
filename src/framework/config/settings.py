@@ -1,13 +1,11 @@
 from __future__ import annotations
-
-from dataclasses import dataclass
-from functools import lru_cache
-from pathlib import Path
 import os
-from urllib.parse import urlparse
-
-from dotenv import load_dotenv
 import requests
+from pathlib import Path
+from dotenv import load_dotenv
+from functools import lru_cache
+from dataclasses import dataclass
+from urllib.parse import urlparse
 
 load_dotenv()
 

@@ -1,13 +1,11 @@
 from __future__ import annotations
-
+from src.db.repositories.base_repository import BaseRepository
 from src.api.schemas.transaction_models import (
     TransactionRecord,
     TransactionFeedItem,
     TransactionFeedPageData,
     TransactionFeedResponse,
 )
-from src.db.repositories.base_repository import BaseRepository
-
 
 class TransactionsRepository(BaseRepository):
     def get_transaction_by_id(self, transaction_id: str) -> TransactionRecord | None:

@@ -1,16 +1,13 @@
 from __future__ import annotations
-
-from assertpy import assert_that, soft_assertions
 import pytest
-
+from assertpy import assert_that, soft_assertions
 from src.framework.reporting.allure_helpers import attach_json
-
 
 @pytest.mark.api
 class TestTransactionCommentService:
     """API coverage for transaction-detail comment creation."""
 
-    def test_transaction_detail_comment_can_be_created_and_read_via_api(
+    def test_transaction_comment_creation_expects_comment_in_api_collection(
         self,
         require_live_rwa_environment,
         comments_service,
