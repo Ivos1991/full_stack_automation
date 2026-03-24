@@ -12,7 +12,7 @@ from src.framework.reporting.allure_helpers import attach_file, attach_json
 class TestTransactionDetailPage:
     """UI coverage for opening and validating transaction detail."""
 
-    def test_seeded_sent_payment_can_be_opened_in_transaction_detail_ui(
+    def test_seeded_payment_detail_page_expects_amount_participants_description_and_status(
         self,
         require_live_rwa_environment,
         settings,

@@ -12,7 +12,7 @@ from src.framework.reporting.allure_helpers import attach_file, attach_json
 class TestTransactionCommentVerticalSlice:
     """End-to-end coverage for transaction-detail comment creation."""
 
-    def test_transaction_comment_vertical_slice_for_ui_created_payment(
+    def test_transaction_comment_vertical_slice_expects_ui_api_and_db_alignment(
         self,
         require_live_rwa_environment,
         settings,

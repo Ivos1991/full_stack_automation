@@ -10,7 +10,7 @@ from src.framework.reporting.allure_helpers import attach_json
 class TestTransactionCommentNotificationRepository:
     """DB coverage for comment-triggered notification side effects."""
 
-    def test_transaction_comment_persists_unread_receiver_notification(
+    def test_transaction_comment_notification_repository_query_expects_unread_receiver_notification(
         self,
         require_live_rwa_environment,
         persisted_receiver_comment_notification_comment,

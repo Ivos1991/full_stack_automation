@@ -10,7 +10,7 @@ from src.framework.reporting.allure_helpers import attach_json
 class TestTransactionCommentNotificationVerticalSlice:
     """End-to-end coverage for the notification side effect triggered by a transaction comment."""
 
-    def test_transaction_comment_creates_unread_receiver_notification_across_api_and_db(
+    def test_transaction_comment_notification_vertical_slice_expects_unread_receiver_notification_across_api_and_db(
         self,
         require_live_rwa_environment,
         auth_service,

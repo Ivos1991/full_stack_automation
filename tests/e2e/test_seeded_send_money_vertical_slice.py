@@ -16,7 +16,7 @@ def _format_usd_from_cents(balance_cents: int) -> str:
 class TestSeededSendMoneyVerticalSlice:
     """End-to-end coverage for the seeded send-money slice across UI, API, and lowdb."""
 
-    def test_seeded_send_money_vertical_slice(
+    def test_seeded_send_money_vertical_slice_expects_ui_api_and_db_alignment(
         self,
         require_live_rwa_environment,
         settings,

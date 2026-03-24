@@ -10,7 +10,7 @@ from src.framework.reporting.allure_helpers import attach_json
 class TestTransactionCommentNotificationReadService:
     """API coverage for the notification read-state transition triggered from a transaction comment."""
 
-    def test_receiver_can_mark_transaction_comment_notification_as_read_via_api(
+    def test_notification_read_transition_expects_comment_notification_removed_from_unread_api_feed(
         self,
         require_live_rwa_environment,
         receiver_authenticated_notifications_service,

@@ -10,7 +10,7 @@ from src.framework.reporting.allure_helpers import attach_json
 class TestTransactionCommentNotificationService:
     """API coverage for notification side effects triggered by transaction comments."""
 
-    def test_transaction_comment_creates_unread_receiver_notification_via_api(
+    def test_transaction_comment_notification_feed_expects_unread_receiver_notification(
         self,
         require_live_rwa_environment,
         receiver_authenticated_notifications_service,

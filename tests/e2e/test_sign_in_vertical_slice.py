@@ -8,7 +8,7 @@ import pytest
 class TestSignInVerticalSlice:
     """End-to-end coverage for dynamic-user sign-in across UI, API, and lowdb state."""
 
-    def test_sign_in_vertical_slice(
+    def test_dynamic_sign_in_vertical_slice_expects_home_feed_loaded(
         self,
         require_live_rwa_environment,
         sign_in_page,

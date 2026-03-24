@@ -12,7 +12,7 @@ from src.framework.reporting.allure_helpers import attach_file, attach_json
 class TestTransactionCommentNotificationReadVerticalSlice:
     """End-to-end coverage for consuming a comment notification and persisting the read-state transition."""
 
-    def test_receiver_can_dismiss_transaction_comment_notification_and_persist_read_state(
+    def test_transaction_comment_notification_read_vertical_slice_expects_read_state_across_ui_api_and_db(
         self,
         require_live_rwa_environment,
         settings,

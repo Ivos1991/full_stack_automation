@@ -16,7 +16,7 @@ def _format_usd_from_cents(balance_cents: int) -> str:
 class TestSeededSendMoneyPage:
     """UI coverage for the seeded send-money flow."""
 
-    def test_seeded_user_can_send_money_from_ui(
+    def test_seeded_send_money_flow_expects_success_confirmation_and_balance_update(
         self,
         require_live_rwa_environment,
         settings,

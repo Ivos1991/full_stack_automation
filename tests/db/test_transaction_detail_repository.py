@@ -10,7 +10,7 @@ from src.framework.reporting.allure_helpers import attach_json
 class TestTransactionDetailRepository:
     """DB coverage for persisted transaction-detail data."""
 
-    def test_transaction_detail_repository_returns_the_created_payment(
+    def test_created_payment_repository_query_expects_matching_transaction_fields(
         self,
         require_live_rwa_environment,
         connected_transactions_repository,

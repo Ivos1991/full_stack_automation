@@ -10,7 +10,7 @@ from src.framework.reporting.allure_helpers import attach_json
 class TestTransactionCommentNotificationReadRepository:
     """DB coverage for the notification read-state transition triggered by a transaction comment."""
 
-    def test_transaction_comment_notification_persists_read_state_after_transition(
+    def test_notification_read_transition_expects_persisted_notification_marked_read(
         self,
         require_live_rwa_environment,
         auth_service,

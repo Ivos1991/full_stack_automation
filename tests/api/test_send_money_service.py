@@ -10,7 +10,7 @@ from src.framework.reporting.allure_helpers import attach_json
 class TestSendMoneyService:
     """API coverage for the seeded send-money business flow."""
 
-    def test_seeded_user_can_create_payment_and_observe_sender_api_state(
+    def test_seeded_payment_creation_expects_sender_state_to_reflect_new_transaction(
         self,
         require_live_rwa_environment,
         auth_service,

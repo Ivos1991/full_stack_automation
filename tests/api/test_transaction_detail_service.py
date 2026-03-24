@@ -10,7 +10,7 @@ from src.framework.reporting.allure_helpers import attach_json
 class TestTransactionDetailService:
     """API coverage for transaction-detail retrieval after a seeded payment is created."""
 
-    def test_transaction_detail_api_returns_the_created_payment(
+    def test_created_payment_detail_request_expects_matching_transaction_fields(
         self,
         require_live_rwa_environment,
         transactions_service,

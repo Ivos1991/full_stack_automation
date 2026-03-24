@@ -10,7 +10,7 @@ from src.framework.reporting.allure_helpers import attach_json
 class TestTransactionsRepository:
     """DB coverage for feed reconstruction through the transactions repository."""
 
-    def test_seeded_user_public_feed_can_be_read_from_repository(
+    def test_seeded_public_feed_repository_query_expects_transactions(
         self,
         require_live_rwa_environment,
         seeded_business_user,

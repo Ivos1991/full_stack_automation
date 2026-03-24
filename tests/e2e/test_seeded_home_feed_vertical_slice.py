@@ -10,7 +10,7 @@ from src.framework.reporting.allure_helpers import attach_json
 class TestSeededHomeFeedVerticalSlice:
     """End-to-end coverage for the seeded landing-feed slice across UI, API, and lowdb."""
 
-    def test_seeded_home_feed_vertical_slice(
+    def test_seeded_home_feed_vertical_slice_expects_ui_api_and_db_alignment(
         self,
         require_live_rwa_environment,
         sign_in_page,
