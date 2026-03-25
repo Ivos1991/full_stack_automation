@@ -2,7 +2,7 @@ from __future__ import annotations
 import pytest
 from pathlib import Path
 from assertpy import assert_that, soft_assertions
-from src.framework.reporting.allure_helpers import attach_file, attach_json
+from src.framework.reporting.evidence_helpers import attach_snapshot, attach_ui_snapshot
 
 @pytest.mark.e2e
 class TestTransactionCommentNotificationReadVerticalSlice:
@@ -51,15 +51,23 @@ class TestTransactionCommentNotificationReadVerticalSlice:
         before_screenshot = notifications_page.screenshot(
             str(Path(settings.screenshots_dir) / "transaction-comment-notification-read-before-e2e.png")
         )
-        attach_file(path=before_screenshot, name="transaction-comment-notification-read-before-e2e")
-
         notifications_page.dismiss_notification(unread_before.id)
         notifications_page.expect_notification_absent(unread_before.id)
 
         after_screenshot = notifications_page.screenshot(
             str(Path(settings.screenshots_dir) / "transaction-comment-notification-read-after-e2e.png")
         )
-        attach_file(path=after_screenshot, name="transaction-comment-notification-read-after-e2e")
+        attach_ui_snapshot(
+            name="transaction-comment-notification-read-before-e2e",
+            screenshot_path=before_screenshot,
+            notification_id=unread_before.id,
+            expected_sender_name=seeded_business_user["firstName"],
+        )
+        attach_ui_snapshot(
+            name="transaction-comment-notification-read-after-e2e",
+            screenshot_path=after_screenshot,
+            dismissed_notification_id=unread_before.id,
+        )
 
         auth_service.login(seeded_send_money_contact_credentials)
         unread_after = notifications_service.get_unread_notification_for_transaction(
@@ -68,15 +76,13 @@ class TestTransactionCommentNotificationReadVerticalSlice:
         )
         persisted_notification = connected_notifications_repository.get_notification_by_id(unread_before.id)
 
-        attach_json(
+        attach_snapshot(
             name="transaction-comment-notification-read-e2e",
-            content={
-                "transaction": ui_created_transaction_comment_transaction.__dict__,
-                "comment": ui_created_transaction_comment_record.__dict__,
-                "unread_before": unread_before.__dict__ if unread_before else None,
-                "unread_after": unread_after.__dict__ if unread_after else None,
-                "persisted_notification": persisted_notification.__dict__ if persisted_notification else None,
-            },
+            transaction=ui_created_transaction_comment_transaction,
+            comment=ui_created_transaction_comment_record,
+            unread_before=unread_before,
+            unread_after=unread_after,
+            persisted_notification=persisted_notification,
         )
 
         assert_that(unread_after, "Expected no unread API notification after UI dismissal").is_none()

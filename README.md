@@ -8,6 +8,7 @@ This project demonstrates a layered pytest framework for validating the same bus
 
 - Playwright UI interactions
 - API services built on `requests`
+- backend multi-step integration scenarios
 - lowdb-backed repository validation
 - Allure reporting evidence
 
@@ -16,8 +17,26 @@ The framework is intentionally modular:
 - `src/ui/` models screens and browser interactions only
 - `src/api/` encapsulates HTTP clients, services, and response models
 - `src/db/` encapsulates data-store access through repositories
+- `src/framework/` contains cross-cutting technical concerns such as config, runtime clients, logging, and reporting helpers
 - `src/fixtures/` keeps setup and teardown explicit
-- `tests/` contains UI, API, DB, and E2E vertical slices
+- `tests/` contains UI, API, DB, integration, and E2E layers
+
+## Architecture
+
+The test layers are intentionally distinct:
+
+- `tests/ui/`
+  Validates browser-visible behavior through page objects only.
+- `tests/api/`
+  Validates endpoint-facing service behavior without UI.
+- `tests/db/`
+  Validates persisted lowdb state through repositories only.
+- `tests/integration/`
+  Validates multi-step backend business behavior across several API calls plus persisted state.
+- `tests/e2e/`
+  Validates full vertical slices across UI, API, and DB together.
+
+This keeps the suite readable and prevents the same test intent from being duplicated across layers.
 
 ## User Data Strategy
 
@@ -82,6 +101,12 @@ Run the full framework suite:
 poetry run pytest -q
 ```
 
+Run the backend integration layer:
+
+```bash
+poetry run pytest tests/integration -q
+```
+
 Run a focused vertical slice:
 
 ```bash
@@ -96,12 +121,34 @@ Run by layer:
 poetry run pytest tests/ui -q
 poetry run pytest tests/api -q
 poetry run pytest tests/db -q
+poetry run pytest tests/integration -q
 poetry run pytest tests/e2e -q
 ```
 
+Run by marker:
+
+```bash
+poetry run pytest -m api -q
+poetry run pytest -m integration -q
+poetry run pytest -m "e2e or ui" -q
+```
+
+Current markers:
+
+- `ui`
+- `api`
+- `db`
+- `integration`
+- `e2e`
+
 ## Reporting
 
-Allure artifacts are written to `artifacts/` by default.
+Allure artifacts are written to `artifacts/` by default. The framework keeps reporting concerns in the framework layer instead of pushing them into services or repositories:
+
+- `src/framework/reporting/allure_helpers.py`
+  low-level Allure attachment functions
+- `src/framework/reporting/evidence_helpers.py`
+  reusable test-layer helpers for structured JSON snapshots and UI screenshot-plus-state evidence
 
 Example:
 
@@ -134,6 +181,25 @@ Or for a custom slice:
 - `test_target = tests`
 - `marker_expression = e2e and not flaky`
 - `pytest_args = -q -rs -p no:cacheprovider`
+
+You can also run the new backend integration layer remotely with:
+
+- `test_target = tests/integration`
+- `marker_expression = integration`
+- `pytest_args = -q -rs -p no:cacheprovider`
+
+## Current Coverage
+
+The repository currently includes validated slices for:
+
+- dynamic-user authentication
+- seeded home feed
+- seeded send money
+- transaction detail
+- transaction comments
+- comment notification creation
+- comment notification read-state transition
+- backend multi-step integration coverage for send money and notification read-state
 
 ## Notes
 

@@ -2,7 +2,7 @@ from __future__ import annotations
 import pytest
 from pathlib import Path
 from assertpy import assert_that, soft_assertions
-from src.framework.reporting.allure_helpers import attach_file, attach_json
+from src.framework.reporting.evidence_helpers import attach_ui_snapshot
 
 @pytest.mark.e2e
 class TestTransactionCommentVerticalSlice:
@@ -24,8 +24,6 @@ class TestTransactionCommentVerticalSlice:
         screenshot_path = ui_created_transaction_comment_detail_page.screenshot(
             str(Path(settings.screenshots_dir) / "transaction-detail-comment-e2e.png")
         )
-        attach_file(path=screenshot_path, name="transaction-detail-comment-e2e")
-
         auth_service.login(seeded_business_user_credentials)
         api_comments = comments_service.get_comments(ui_created_transaction_comment_transaction.id)
         api_comment = next(
@@ -34,13 +32,12 @@ class TestTransactionCommentVerticalSlice:
         )
         db_comment = ui_created_transaction_comment_record
 
-        attach_json(
+        attach_ui_snapshot(
             name="transaction-detail-comment-e2e",
-            content={
-                "transaction": ui_created_transaction_comment_transaction.__dict__,
-                "api_comment": api_comment.__dict__ if api_comment else None,
-                "db_comment": db_comment.__dict__ if db_comment else None,
-            },
+            screenshot_path=screenshot_path,
+            transaction=ui_created_transaction_comment_transaction,
+            api_comment=api_comment,
+            db_comment=db_comment,
         )
 
         assert_that(api_comment, "Expected created comment in API state after UI creation").is_not_none()

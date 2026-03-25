@@ -2,7 +2,7 @@ from __future__ import annotations
 import pytest
 from pathlib import Path
 from assertpy import assert_that
-from src.framework.reporting.allure_helpers import attach_file, attach_json
+from src.framework.reporting.evidence_helpers import attach_ui_snapshot
 
 def _format_usd_from_cents(balance_cents: int) -> str:
     return f"${balance_cents / 100:,.2f}"
@@ -57,21 +57,18 @@ class TestSeededSendMoneyPage:
         screenshot_path = transaction_create_page.screenshot(
             str(Path(settings.screenshots_dir) / "seeded-send-money-ui-success.png")
         )
-        attach_file(path=screenshot_path, name="seeded-send-money-ui-success")
-
         transaction_create_page.return_to_transactions()
         home_page.open_personal_feed()
         home_page.expect_transaction_with_description(seeded_send_money_payment.description)
         home_page.expect_user_balance(expected_balance_after_payment)
 
-        attach_json(
+        attach_ui_snapshot(
             name="seeded-send-money-ui",
-            content={
-                "starting_balance": starting_balance,
-                "expected_balance_after_payment": expected_balance_after_payment,
-                "recipient_username": seeded_send_money_contact["username"],
-                "payment_description": seeded_send_money_payment.description,
-            },
+            screenshot_path=screenshot_path,
+            starting_balance=starting_balance,
+            expected_balance_after_payment=expected_balance_after_payment,
+            recipient_username=seeded_send_money_contact["username"],
+            payment_description=seeded_send_money_payment.description,
         )
 
         assert_that(starting_balance, "Expected the seeded sender to start with a visible balance").is_not_empty()

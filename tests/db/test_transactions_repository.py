@@ -1,7 +1,7 @@
 from __future__ import annotations
 import pytest
 from assertpy import assert_that
-from src.framework.reporting.allure_helpers import attach_json
+from src.framework.reporting.evidence_helpers import attach_snapshot
 
 @pytest.mark.db
 class TestTransactionsRepository:
@@ -19,13 +19,11 @@ class TestTransactionsRepository:
             page=1,
             limit=10,
         )
-        attach_json(
+        attach_snapshot(
             name="seeded-public-feed-db",
-            content={
-                "page_data": public_feed.page_data.__dict__,
-                "first_result": public_feed.results[0].__dict__ if public_feed.results else None,
-                "result_count": len(public_feed.results),
-            },
+            page_data=public_feed.page_data,
+            first_result=public_feed.results[0] if public_feed.results else None,
+            result_count=len(public_feed.results),
         )
 
         assert_that(public_feed.page_data.page, "Expected repository feed page").is_equal_to(1)

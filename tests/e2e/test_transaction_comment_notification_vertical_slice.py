@@ -1,7 +1,7 @@
 from __future__ import annotations
 import pytest
 from assertpy import assert_that, soft_assertions
-from src.framework.reporting.allure_helpers import attach_json
+from src.framework.reporting.evidence_helpers import attach_snapshot
 
 @pytest.mark.e2e
 class TestTransactionCommentNotificationVerticalSlice:
@@ -29,14 +29,12 @@ class TestTransactionCommentNotificationVerticalSlice:
             transaction_id=ui_created_transaction_comment_transaction.id,
         )
 
-        attach_json(
+        attach_snapshot(
             name="transaction-comment-notification-e2e",
-            content={
-                "transaction": ui_created_transaction_comment_transaction.__dict__,
-                "comment": ui_created_transaction_comment_record.__dict__,
-                "api_notification": api_notification.__dict__ if api_notification else None,
-                "db_notification": db_notification.__dict__ if db_notification else None,
-            },
+            transaction=ui_created_transaction_comment_transaction,
+            comment=ui_created_transaction_comment_record,
+            api_notification=api_notification,
+            db_notification=db_notification,
         )
 
         assert_that(

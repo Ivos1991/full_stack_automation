@@ -1,7 +1,7 @@
 from __future__ import annotations
 import pytest
 from assertpy import assert_that, soft_assertions
-from src.framework.reporting.allure_helpers import attach_json
+from src.framework.reporting.evidence_helpers import attach_snapshot
 
 @pytest.mark.db
 class TestTransactionCommentRepository:
@@ -21,13 +21,11 @@ class TestTransactionCommentRepository:
         )
         persisted_comments = connected_comments_repository.get_comments_for_transaction(seeded_sent_payment.id)
 
-        attach_json(
+        attach_snapshot(
             name="transaction-detail-comment-db",
-            content={
-                "transaction": seeded_sent_payment.__dict__,
-                "persisted_comment": persisted_comment.__dict__ if persisted_comment else None,
-                "comments_count": len(persisted_comments),
-            },
+            transaction=seeded_sent_payment,
+            persisted_comment=persisted_comment,
+            comments_count=len(persisted_comments),
         )
 
         assert_that(persisted_comment, "Expected persisted comment for transaction detail").is_not_none()

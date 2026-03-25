@@ -2,7 +2,7 @@ from __future__ import annotations
 import pytest
 from pathlib import Path
 from assertpy import assert_that, soft_assertions
-from src.framework.reporting.allure_helpers import attach_file, attach_json
+from src.framework.reporting.evidence_helpers import attach_ui_snapshot
 
 def _format_usd_from_cents(balance_cents: int) -> str:
     return f"${balance_cents / 100:,.2f}"
@@ -62,8 +62,6 @@ class TestSeededSendMoneyVerticalSlice:
         screenshot_path = transaction_create_page.screenshot(
             str(Path(settings.screenshots_dir) / "seeded-send-money-e2e-success.png")
         )
-        attach_file(path=screenshot_path, name="seeded-send-money-e2e-success")
-
         transaction_create_page.return_to_transactions()
         home_page.open_personal_feed()
         home_page.expect_transaction_with_description(seeded_send_money_payment.description)
@@ -89,21 +87,20 @@ class TestSeededSendMoneyVerticalSlice:
             transaction_id=persisted_transaction.id,
         )
 
-        attach_json(
+        attach_ui_snapshot(
             name="seeded-send-money-e2e",
-            content={
-                "ui": {
-                    "expected_sender_balance_text": expected_sender_balance_text,
-                    "payment_description": seeded_send_money_payment.description,
-                    "recipient_username": seeded_send_money_contact["username"],
-                },
-                "api_transaction": api_transaction.__dict__,
-                "api_current_user": api_current_user.__dict__,
-                "db_transaction": persisted_transaction.__dict__ if persisted_transaction else None,
-                "db_sender_after_payment": db_sender_after_payment,
-                "db_receiver_after_payment": db_receiver_after_payment,
-                "db_receiver_notification": db_receiver_notification.__dict__ if db_receiver_notification else None,
+            screenshot_path=screenshot_path,
+            ui={
+                "expected_sender_balance_text": expected_sender_balance_text,
+                "payment_description": seeded_send_money_payment.description,
+                "recipient_username": seeded_send_money_contact["username"],
             },
+            api_transaction=api_transaction,
+            api_current_user=api_current_user,
+            db_transaction=persisted_transaction,
+            db_sender_after_payment=db_sender_after_payment,
+            db_receiver_after_payment=db_receiver_after_payment,
+            db_receiver_notification=db_receiver_notification,
         )
 
         assert_that(

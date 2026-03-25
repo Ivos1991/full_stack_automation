@@ -2,7 +2,7 @@ from __future__ import annotations
 import pytest
 from pathlib import Path
 from assertpy import assert_that, soft_assertions
-from src.framework.reporting.allure_helpers import attach_file, attach_json
+from src.framework.reporting.evidence_helpers import attach_ui_snapshot
 
 @pytest.mark.e2e
 class TestTransactionDetailVerticalSlice:
@@ -84,18 +84,15 @@ class TestTransactionDetailVerticalSlice:
         screenshot_path = transaction_detail_page.screenshot(
             str(Path(settings.screenshots_dir) / "transaction-detail-e2e.png")
         )
-        attach_file(path=screenshot_path, name="transaction-detail-e2e")
-
         auth_service.login(seeded_business_user_credentials)
         api_transaction = transactions_service.get_transaction_by_id(persisted_transaction.id)
 
-        attach_json(
+        attach_ui_snapshot(
             name="transaction-detail-e2e",
-            content={
-                "ui_transaction": persisted_transaction.__dict__,
-                "api_transaction": api_transaction.__dict__,
-                "db_transaction": persisted_transaction.__dict__,
-            },
+            screenshot_path=screenshot_path,
+            ui_transaction=persisted_transaction,
+            api_transaction=api_transaction,
+            db_transaction=persisted_transaction,
         )
 
         with soft_assertions():

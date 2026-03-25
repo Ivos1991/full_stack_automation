@@ -1,7 +1,7 @@
 from __future__ import annotations
 import pytest
 from assertpy import assert_that, soft_assertions
-from src.framework.reporting.allure_helpers import attach_json
+from src.framework.reporting.evidence_helpers import attach_snapshot
 
 @pytest.mark.db
 class TestSendMoneyPersistence:
@@ -35,16 +35,14 @@ class TestSendMoneyPersistence:
             transaction_id=created_payment.id,
         )
 
-        attach_json(
+        attach_snapshot(
             name="seeded-send-money-db",
-            content={
-                "sender_before_payment": sender_before_payment,
-                "receiver_before_payment": receiver_before_payment,
-                "transaction_record": transaction_record.__dict__ if transaction_record else None,
-                "sender_after_payment": sender_after_payment,
-                "receiver_after_payment": receiver_after_payment,
-                "payment_notification": payment_notification.__dict__ if payment_notification else None,
-            },
+            sender_before_payment=sender_before_payment,
+            receiver_before_payment=receiver_before_payment,
+            transaction_record=transaction_record,
+            sender_after_payment=sender_after_payment,
+            receiver_after_payment=receiver_after_payment,
+            payment_notification=payment_notification,
         )
 
         assert_that(transaction_record, "Payment transaction should be persisted in lowdb").is_not_none()

@@ -1,7 +1,7 @@
 from __future__ import annotations
 import pytest
 from assertpy import assert_that, soft_assertions
-from src.framework.reporting.allure_helpers import attach_json
+from src.framework.reporting.evidence_helpers import attach_snapshot
 
 @pytest.mark.db
 class TestTransactionCommentNotificationRepository:
@@ -17,13 +17,11 @@ class TestTransactionCommentNotificationRepository:
         """Create the comment through fixtures and verify the receiver-side unread notification in lowdb."""
         notification = persisted_receiver_comment_notification_unread
 
-        attach_json(
+        attach_snapshot(
             name="transaction-comment-notification-db",
-            content={
-                "comment": persisted_receiver_comment_notification_comment.__dict__,
-                "receiver_user_id": persisted_receiver_comment_notification_receiver_user_id,
-                "notification": notification.__dict__ if notification else None,
-            },
+            comment=persisted_receiver_comment_notification_comment,
+            receiver_user_id=persisted_receiver_comment_notification_receiver_user_id,
+            notification=notification,
         )
 
         assert_that(notification, "Expected persisted unread comment notification for the receiver").is_not_none()
