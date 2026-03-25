@@ -211,27 +211,40 @@ Characteristics:
 - upload artifacts even on failure
 - keep workflow count low until complexity is justified
 
-## Suggested Workflow Responsibilities
+## Implemented Workflow Responsibilities
 
 ### `pr-validation.yml`
 
-- install Python dependencies
-- install Playwright browsers
-- run lint and static checks
-- run smoke suite
-- publish test artifacts
+- run on pull requests and pushes to `main`
+- call the reusable suite runner
+- provision the external Cypress Real World App checkout
+- start the app, detect the active backend port, run the full standalone suite
+- publish `artifacts/` and RWA startup logs
 
-### `nightly.yml`
+### `nightly-regression.yml`
 
-- install dependencies
-- run regression suites
-- publish Allure results and artifacts
+- run on a daily schedule and on manual dispatch
+- execute the validated standalone suite as the nightly regression signal
+- publish the same artifacts and logs for troubleshooting
 
 ### `manual-run.yml`
 
 - accept runtime inputs
 - run selected tests
-- publish artifacts
+- support custom pytest marker expressions without hardcoded workflow markers
+- reuse the same environment provisioning path as PR and nightly workflows
+- publish the same artifacts as the other workflows
+
+### `run-standalone-suite.yml`
+
+- reusable workflow shared by all public entrypoint workflows
+- sets explicit framework environment variables
+- checks out Cypress Real World App into an external path inside the runner workspace
+- installs Python, Poetry, Node.js, Playwright, and RWA dependencies
+- starts RWA, waits for frontend readiness, detects the backend port, and exports `API_BASE_URL`
+- supports optional marker-based test selection through a workflow input
+- runs pytest with Allure output enabled
+- uploads `artifacts/` and `rwa-logs/` even when the run fails
 
 ## Reliability Guidance
 
@@ -258,6 +271,7 @@ The target state is:
 
 - Allure as the reporting center
 - focused artifact collection
+- one reusable suite runner
 - one PR workflow
 - one nightly workflow
 - one manual workflow

@@ -110,6 +110,31 @@ poetry run pytest tests/e2e/test_transaction_comment_vertical_slice.py --allured
 allure serve artifacts/allure-results
 ```
 
+## CI/CD
+
+The public repo ships with three GitHub Actions workflows:
+
+- `pr-validation.yml`
+  Runs the full standalone suite on pull requests and pushes to `main`.
+- `nightly-regression.yml`
+  Runs the same validated suite on a daily schedule.
+- `manual-run.yml`
+  Lets you run a selected pytest target and optional custom marker expression from the GitHub Actions UI.
+
+The workflows provision Cypress Real World App as an external dependency inside the runner, write explicit framework environment values, start the app, detect the live backend port, run pytest with Allure output, and upload `artifacts/` plus RWA startup logs.
+
+Example manual-run inputs:
+
+- `test_target = tests`
+- `marker_expression = api`
+- `pytest_args = -q -rs -p no:cacheprovider`
+
+Or for a custom slice:
+
+- `test_target = tests`
+- `marker_expression = e2e and not flaky`
+- `pytest_args = -q -rs -p no:cacheprovider`
+
 ## Notes
 
 - The framework does not vendor Cypress Real World App.
