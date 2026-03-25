@@ -1,0 +1,187 @@
+name: Run Standalone Suite
+
+on:
+  workflow_call:
+    inputs:
+      suite_name:
+        required: true
+        type: string
+      test_target:
+        required: false
+        type: string
+        default: tests
+      marker_expression:
+        required: false
+        type: string
+        default: ""
+      pytest_args:
+        required: false
+        type: string
+        default: -q -rs -p no:cacheprovider
+      artifact_name:
+        required: true
+        type: string
+      timeout_minutes:
+        required: false
+        type: number
+        default: 30
+
+permissions:
+  contents: read
+
+jobs:
+  run-tests:
+    name: ${{ inputs.suite_name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ inputs.timeout_minutes }}
+    env:
+      CI: true
+      HEADLESS: true
+      BASE_URL: http://localhost:3000
+      RWA_USERNAME: Heath93
+      RWA_PASSWORD: s3cret
+      DEFAULT_TIMEOUT_MS: 10000
+      ALLURE_RESULTS_DIR: artifacts/allure-results
+      SCREENSHOTS_DIR: artifacts/screenshots
+      TRACES_DIR: artifacts/traces
+      VIDEOS_DIR: artifacts/videos
+      RWA_ROOT_PATH: ${{ github.workspace }}/external/cypress-realworld-app
+
+    steps:
+      - name: Checkout framework
+        uses: actions/checkout@v4
+
+      - name: Checkout Cypress Real World App
+        uses: actions/checkout@v4
+        with:
+          repository: cypress-io/cypress-realworld-app
+          path: external/cypress-realworld-app
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: yarn
+          cache-dependency-path: external/cypress-realworld-app/yarn.lock
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install framework dependencies
+        run: poetry install --no-interaction
+
+      - name: Install Playwright browser dependencies
+        run: poetry run playwright install --with-deps chromium
+
+      - name: Install Real World App dependencies
+        working-directory: external/cypress-realworld-app
+        run: |
+          corepack enable
+          yarn install --frozen-lockfile
+
+      - name: Write CI environment file
+        run: |
+          cat <<EOF > .env
+          RWA_ROOT_PATH=${RWA_ROOT_PATH}
+          BASE_URL=${BASE_URL}
+          HEADLESS=${HEADLESS}
+          DEFAULT_TIMEOUT_MS=${DEFAULT_TIMEOUT_MS}
+          ALLURE_RESULTS_DIR=${ALLURE_RESULTS_DIR}
+          SCREENSHOTS_DIR=${SCREENSHOTS_DIR}
+          TRACES_DIR=${TRACES_DIR}
+          VIDEOS_DIR=${VIDEOS_DIR}
+          RWA_USERNAME=${RWA_USERNAME}
+          RWA_PASSWORD=${RWA_PASSWORD}
+          EOF
+
+      - name: Start Real World App and run standalone framework tests
+        working-directory: external/cypress-realworld-app
+        run: |
+          mkdir -p "${GITHUB_WORKSPACE}/rwa-logs"
+
+          cleanup() {
+            if [ -n "${RWA_DEV_PID:-}" ] && kill -0 "${RWA_DEV_PID}" 2>/dev/null; then
+              kill "${RWA_DEV_PID}" || true
+            fi
+          }
+          trap cleanup EXIT
+
+          nohup yarn dev > "${GITHUB_WORKSPACE}/rwa-logs/rwa-dev.log" 2>&1 &
+          RWA_DEV_PID=$!
+          echo "${RWA_DEV_PID}" > "${GITHUB_WORKSPACE}/rwa-logs/rwa-dev.pid"
+
+          frontend_ready="false"
+          API_BASE_URL=""
+
+          for attempt in {1..90}; do
+            if ! kill -0 "${RWA_DEV_PID}" 2>/dev/null; then
+              echo "RWA dev process exited before the environment became ready"
+              echo "==== rwa-dev.log ===="
+              cat "${GITHUB_WORKSPACE}/rwa-logs/rwa-dev.log" || true
+              exit 1
+            fi
+
+            if curl -fsS "${BASE_URL}/signin" >/dev/null; then
+              frontend_ready="true"
+            fi
+
+            for port in 3001 3002 3003; do
+              status="$(curl -s -o /dev/null -w '%{http_code}' -X POST \
+                "http://localhost:${port}/login" \
+                -H 'Content-Type: application/json' \
+                -d '{"username":"health-check","password":"health-check"}' || true)"
+
+              if [ "${status}" != "000" ] && [ "${status}" != "404" ] && [ "${status}" != "405" ]; then
+                API_BASE_URL="http://localhost:${port}"
+                break
+              fi
+            done
+
+            if [ "${frontend_ready}" = "true" ] && [ -n "${API_BASE_URL}" ]; then
+              break
+            fi
+            sleep 2
+          done
+
+          if [ "${frontend_ready}" != "true" ]; then
+            echo "Frontend did not become ready at ${BASE_URL}/signin"
+            echo "==== rwa-dev.log ===="
+            cat "${GITHUB_WORKSPACE}/rwa-logs/rwa-dev.log" || true
+            exit 1
+          fi
+
+          if [ -z "${API_BASE_URL}" ]; then
+            echo "Backend did not become ready on ports 3001-3003"
+            echo "==== rwa-dev.log ===="
+            cat "${GITHUB_WORKSPACE}/rwa-logs/rwa-dev.log" || true
+            exit 1
+          fi
+
+          echo "Detected backend URL ${API_BASE_URL}"
+          echo "BASE_URL=${BASE_URL}"
+          echo "RWA_ROOT_PATH=${RWA_ROOT_PATH}"
+
+          marker_args=""
+          if [ -n "${{ inputs.marker_expression }}" ]; then
+            marker_args="-m \"${{ inputs.marker_expression }}\""
+          fi
+
+          cd "${GITHUB_WORKSPACE}"
+          export API_BASE_URL
+          eval "poetry run pytest --alluredir=artifacts/allure-results ${{ inputs.test_target }} ${marker_args} ${{ inputs.pytest_args }}"
+
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact_name }}
+          if-no-files-found: warn
+          path: |
+            artifacts/
+            rwa-logs/
