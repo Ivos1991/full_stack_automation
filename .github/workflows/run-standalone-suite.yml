@@ -55,7 +55,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: cypress-io/cypress-realworld-app
-          ref: main
           path: external/cypress-realworld-app
 
       - name: Set up Python
