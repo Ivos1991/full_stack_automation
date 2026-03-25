@@ -37,7 +37,7 @@ jobs:
     env:
       CI: true
       HEADLESS: true
-      BASE_URL: http://127.0.0.1:3000
+      BASE_URL: http://localhost:3000
       RWA_USERNAME: Heath93
       RWA_PASSWORD: s3cret
       DEFAULT_TIMEOUT_MS: 10000
@@ -122,12 +122,12 @@ jobs:
         run: |
           for port in 3001 3002 3003; do
             status="$(curl -s -o /dev/null -w '%{http_code}' -X POST \
-              "http://127.0.0.1:${port}/login" \
+              "http://localhost:${port}/login" \
               -H 'Content-Type: application/json' \
               -d '{"username":"health-check","password":"health-check"}' || true)"
 
             if [ "${status}" != "000" ] && [ "${status}" != "404" ] && [ "${status}" != "405" ]; then
-              echo "API_BASE_URL=http://127.0.0.1:${port}" >> "${GITHUB_ENV}"
+              echo "API_BASE_URL=http://localhost:${port}" >> "${GITHUB_ENV}"
               echo "Detected backend port ${port}"
               exit 0
             fi
