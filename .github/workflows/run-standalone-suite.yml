@@ -104,7 +104,7 @@ jobs:
         working-directory: external/cypress-realworld-app
         run: |
           mkdir -p "${GITHUB_WORKSPACE}/rwa-logs"
-          yarn dev > "${GITHUB_WORKSPACE}/rwa-logs/rwa-dev.log" 2>&1 &
+          nohup yarn dev > "${GITHUB_WORKSPACE}/rwa-logs/rwa-dev.log" 2>&1 &
           echo $! > "${GITHUB_WORKSPACE}/rwa-logs/rwa-dev.pid"
 
       - name: Wait for frontend
@@ -116,6 +116,8 @@ jobs:
             sleep 2
           done
           echo "Frontend did not become ready at ${BASE_URL}/signin"
+          echo "==== rwa-dev.log ===="
+          cat rwa-logs/rwa-dev.log || true
           exit 1
 
       - name: Detect backend URL
@@ -134,6 +136,8 @@ jobs:
           done
 
           echo "Backend did not become ready on ports 3001-3003"
+          echo "==== rwa-dev.log ===="
+          cat rwa-logs/rwa-dev.log || true
           exit 1
 
       - name: Show effective environment
