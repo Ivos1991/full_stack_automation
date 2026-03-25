@@ -2,7 +2,7 @@ from __future__ import annotations
 import pytest
 from pathlib import Path
 from assertpy import assert_that
-from src.framework.reporting.allure_helpers import attach_file, attach_json
+from src.framework.reporting.evidence_helpers import attach_ui_snapshot
 
 @pytest.mark.ui
 class TestTransactionDetailPage:
@@ -50,8 +50,11 @@ class TestTransactionDetailPage:
         screenshot_path = transaction_detail_page.screenshot(
             str(Path(settings.screenshots_dir) / "transaction-detail-ui.png")
         )
-        attach_file(path=screenshot_path, name="transaction-detail-ui")
-        attach_json(name="transaction-detail-ui-source", content=seeded_sent_payment.__dict__)
+        attach_ui_snapshot(
+            name="transaction-detail-ui",
+            screenshot_path=screenshot_path,
+            source_transaction=seeded_sent_payment,
+        )
 
         assert_that(
             seeded_sent_payment.id,

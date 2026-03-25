@@ -1,7 +1,7 @@
 from __future__ import annotations
 import pytest
 from assertpy import assert_that, soft_assertions
-from src.framework.reporting.allure_helpers import attach_json
+from src.framework.reporting.evidence_helpers import attach_snapshot
 
 @pytest.mark.db
 class TestTransactionDetailRepository:
@@ -16,12 +16,10 @@ class TestTransactionDetailRepository:
         """Create a seeded payment through fixtures and verify the persisted lowdb transaction matches it."""
         persisted_transaction = connected_transactions_repository.get_transaction_by_id(seeded_sent_payment.id)
 
-        attach_json(
+        attach_snapshot(
             name="transaction-detail-db",
-            content={
-                "source_transaction": seeded_sent_payment.__dict__,
-                "db_transaction_detail": persisted_transaction.__dict__ if persisted_transaction else None,
-            },
+            source_transaction=seeded_sent_payment,
+            db_transaction_detail=persisted_transaction,
         )
 
         assert_that(

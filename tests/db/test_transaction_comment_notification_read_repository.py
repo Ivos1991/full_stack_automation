@@ -1,7 +1,7 @@
 from __future__ import annotations
 import pytest
 from assertpy import assert_that, soft_assertions
-from src.framework.reporting.allure_helpers import attach_json
+from src.framework.reporting.evidence_helpers import attach_snapshot
 
 @pytest.mark.db
 class TestTransactionCommentNotificationReadRepository:
@@ -32,15 +32,13 @@ class TestTransactionCommentNotificationReadRepository:
             persisted_receiver_comment_notification_unread.id
         )
 
-        attach_json(
+        attach_snapshot(
             name="transaction-comment-notification-read-db",
-            content={
-                "comment": persisted_receiver_comment_notification_comment.__dict__,
-                "receiver_user_id": persisted_receiver_comment_notification_receiver_user_id,
-                "unread_before": unread_before.__dict__ if unread_before else None,
-                "unread_after": unread_after.__dict__ if unread_after else None,
-                "persisted_notification": persisted_notification.__dict__ if persisted_notification else None,
-            },
+            comment=persisted_receiver_comment_notification_comment,
+            receiver_user_id=persisted_receiver_comment_notification_receiver_user_id,
+            unread_before=unread_before,
+            unread_after=unread_after,
+            persisted_notification=persisted_notification,
         )
 
         assert_that(unread_before, "Expected unread receiver notification before the read transition").is_not_none()

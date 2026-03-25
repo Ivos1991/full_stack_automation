@@ -1,7 +1,7 @@
 from __future__ import annotations
 import pytest
 from assertpy import assert_that
-from src.framework.reporting.allure_helpers import attach_json
+from src.framework.reporting.evidence_helpers import attach_snapshot
 
 @pytest.mark.e2e
 class TestSeededHomeFeedVerticalSlice:
@@ -35,9 +35,9 @@ class TestSeededHomeFeedVerticalSlice:
         home_page.expect_seeded_user_landing_loaded()
         ui_transactions = home_page.get_visible_transaction_summaries(limit=3)
 
-        attach_json(name="seeded-home-feed-ui", content=ui_transactions)
-        attach_json(name="seeded-home-feed-api", content=[item.__dict__ for item in api_feed.results[:3]])
-        attach_json(name="seeded-home-feed-db", content=[item.__dict__ for item in db_feed.results[:3]])
+        attach_snapshot(name="seeded-home-feed-ui", content=ui_transactions)
+        attach_snapshot(name="seeded-home-feed-api", content=api_feed.results[:3])
+        attach_snapshot(name="seeded-home-feed-db", content=db_feed.results[:3])
 
         assert_that(api_feed.results, "Expected API seeded feed results").is_not_empty()
         assert_that(db_feed.results, "Expected DB seeded feed results").is_not_empty()

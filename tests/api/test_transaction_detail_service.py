@@ -1,7 +1,7 @@
 from __future__ import annotations
 import pytest
 from assertpy import assert_that, soft_assertions
-from src.framework.reporting.allure_helpers import attach_json
+from src.framework.reporting.evidence_helpers import attach_snapshot
 
 @pytest.mark.api
 class TestTransactionDetailService:
@@ -16,12 +16,10 @@ class TestTransactionDetailService:
         """Use the fixture-created payment as the source of truth and verify the detail endpoint returns the same record."""
         transaction_detail = transactions_service.get_transaction_by_id(seeded_sent_payment.id)
 
-        attach_json(
+        attach_snapshot(
             name="transaction-detail-api",
-            content={
-                "source_transaction": seeded_sent_payment.__dict__,
-                "api_transaction_detail": transaction_detail.__dict__,
-            },
+            source_transaction=seeded_sent_payment,
+            api_transaction_detail=transaction_detail,
         )
 
         with soft_assertions():

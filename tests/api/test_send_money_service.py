@@ -1,7 +1,7 @@
 from __future__ import annotations
 import pytest
 from assertpy import assert_that
-from src.framework.reporting.allure_helpers import attach_json
+from src.framework.reporting.evidence_helpers import attach_snapshot
 
 @pytest.mark.api
 class TestSendMoneyService:
@@ -29,15 +29,13 @@ class TestSendMoneyService:
 
         expected_balance_after_payment = seeded_business_user["balance"] - seeded_send_money_payment.amount_cents
 
-        attach_json(
+        attach_snapshot(
             name="seeded-send-money-api",
-            content={
-                "current_user_before_payment": current_user_before_payment.__dict__,
-                "created_payment": created_payment.__dict__,
-                "transaction_detail": transaction_detail.__dict__,
-                "current_user_after_payment": current_user_after_payment.__dict__,
-                "first_personal_feed_item": personal_feed.results[0].__dict__ if personal_feed.results else None,
-            },
+            current_user_before_payment=current_user_before_payment,
+            created_payment=created_payment,
+            transaction_detail=transaction_detail,
+            current_user_after_payment=current_user_after_payment,
+            first_personal_feed_item=personal_feed.results[0] if personal_feed.results else None,
         )
 
         assert_that(

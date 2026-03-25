@@ -1,7 +1,7 @@
 from __future__ import annotations
 import pytest
 from assertpy import assert_that, soft_assertions
-from src.framework.reporting.allure_helpers import attach_json
+from src.framework.reporting.evidence_helpers import attach_snapshot
 
 @pytest.mark.api
 class TestTransactionCommentService:
@@ -24,13 +24,11 @@ class TestTransactionCommentService:
             None,
         )
 
-        attach_json(
+        attach_snapshot(
             name="transaction-detail-comment-api",
-            content={
-                "transaction": seeded_sent_payment.__dict__,
-                "created_comment": created_comment.__dict__ if created_comment else None,
-                "comments_count": len(comments),
-            },
+            transaction=seeded_sent_payment,
+            created_comment=created_comment,
+            comments_count=len(comments),
         )
 
         assert_that(created_comment, "Expected created comment in API comments response").is_not_none()
