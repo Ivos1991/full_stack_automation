@@ -116,32 +116,45 @@ jobs:
           RWA_DEV_PID=$!
           echo "${RWA_DEV_PID}" > "${GITHUB_WORKSPACE}/rwa-logs/rwa-dev.pid"
 
-          for attempt in {1..60}; do
+          frontend_ready="false"
+          API_BASE_URL=""
+
+          for attempt in {1..90}; do
+            if ! kill -0 "${RWA_DEV_PID}" 2>/dev/null; then
+              echo "RWA dev process exited before the environment became ready"
+              echo "==== rwa-dev.log ===="
+              cat "${GITHUB_WORKSPACE}/rwa-logs/rwa-dev.log" || true
+              exit 1
+            fi
+
             if curl -fsS "${BASE_URL}/signin" >/dev/null; then
+              frontend_ready="true"
+            fi
+
+            for port in 3001 3002 3003; do
+              status="$(curl -s -o /dev/null -w '%{http_code}' -X POST \
+                "http://localhost:${port}/login" \
+                -H 'Content-Type: application/json' \
+                -d '{"username":"health-check","password":"health-check"}' || true)"
+
+              if [ "${status}" != "000" ] && [ "${status}" != "404" ] && [ "${status}" != "405" ]; then
+                API_BASE_URL="http://localhost:${port}"
+                break
+              fi
+            done
+
+            if [ "${frontend_ready}" = "true" ] && [ -n "${API_BASE_URL}" ]; then
               break
             fi
             sleep 2
           done
 
-          if ! curl -fsS "${BASE_URL}/signin" >/dev/null; then
+          if [ "${frontend_ready}" != "true" ]; then
             echo "Frontend did not become ready at ${BASE_URL}/signin"
             echo "==== rwa-dev.log ===="
             cat "${GITHUB_WORKSPACE}/rwa-logs/rwa-dev.log" || true
             exit 1
           fi
-
-          API_BASE_URL=""
-          for port in 3001 3002 3003; do
-            status="$(curl -s -o /dev/null -w '%{http_code}' -X POST \
-              "http://localhost:${port}/login" \
-              -H 'Content-Type: application/json' \
-              -d '{"username":"health-check","password":"health-check"}' || true)"
-
-            if [ "${status}" != "000" ] && [ "${status}" != "404" ] && [ "${status}" != "405" ]; then
-              API_BASE_URL="http://localhost:${port}"
-              break
-            fi
-          done
 
           if [ -z "${API_BASE_URL}" ]; then
             echo "Backend did not become ready on ports 3001-3003"
