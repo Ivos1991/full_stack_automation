@@ -100,28 +100,37 @@ jobs:
           RWA_PASSWORD=${RWA_PASSWORD}
           EOF
 
-      - name: Start Real World App
+      - name: Start Real World App and run standalone framework tests
         working-directory: external/cypress-realworld-app
         run: |
           mkdir -p "${GITHUB_WORKSPACE}/rwa-logs"
-          nohup yarn dev > "${GITHUB_WORKSPACE}/rwa-logs/rwa-dev.log" 2>&1 &
-          echo $! > "${GITHUB_WORKSPACE}/rwa-logs/rwa-dev.pid"
 
-      - name: Wait for frontend
-        run: |
+          cleanup() {
+            if [ -n "${RWA_DEV_PID:-}" ] && kill -0 "${RWA_DEV_PID}" 2>/dev/null; then
+              kill "${RWA_DEV_PID}" || true
+            fi
+          }
+          trap cleanup EXIT
+
+          nohup yarn dev > "${GITHUB_WORKSPACE}/rwa-logs/rwa-dev.log" 2>&1 &
+          RWA_DEV_PID=$!
+          echo "${RWA_DEV_PID}" > "${GITHUB_WORKSPACE}/rwa-logs/rwa-dev.pid"
+
           for attempt in {1..60}; do
             if curl -fsS "${BASE_URL}/signin" >/dev/null; then
-              exit 0
+              break
             fi
             sleep 2
           done
-          echo "Frontend did not become ready at ${BASE_URL}/signin"
-          echo "==== rwa-dev.log ===="
-          cat rwa-logs/rwa-dev.log || true
-          exit 1
 
-      - name: Detect backend URL
-        run: |
+          if ! curl -fsS "${BASE_URL}/signin" >/dev/null; then
+            echo "Frontend did not become ready at ${BASE_URL}/signin"
+            echo "==== rwa-dev.log ===="
+            cat "${GITHUB_WORKSPACE}/rwa-logs/rwa-dev.log" || true
+            exit 1
+          fi
+
+          API_BASE_URL=""
           for port in 3001 3002 3003; do
             status="$(curl -s -o /dev/null -w '%{http_code}' -X POST \
               "http://localhost:${port}/login" \
@@ -129,30 +138,29 @@ jobs:
               -d '{"username":"health-check","password":"health-check"}' || true)"
 
             if [ "${status}" != "000" ] && [ "${status}" != "404" ] && [ "${status}" != "405" ]; then
-              echo "API_BASE_URL=http://localhost:${port}" >> "${GITHUB_ENV}"
-              echo "Detected backend port ${port}"
-              exit 0
+              API_BASE_URL="http://localhost:${port}"
+              break
             fi
           done
 
-          echo "Backend did not become ready on ports 3001-3003"
-          echo "==== rwa-dev.log ===="
-          cat rwa-logs/rwa-dev.log || true
-          exit 1
+          if [ -z "${API_BASE_URL}" ]; then
+            echo "Backend did not become ready on ports 3001-3003"
+            echo "==== rwa-dev.log ===="
+            cat "${GITHUB_WORKSPACE}/rwa-logs/rwa-dev.log" || true
+            exit 1
+          fi
 
-      - name: Show effective environment
-        run: |
+          echo "Detected backend URL ${API_BASE_URL}"
           echo "BASE_URL=${BASE_URL}"
-          echo "API_BASE_URL=${API_BASE_URL}"
           echo "RWA_ROOT_PATH=${RWA_ROOT_PATH}"
 
-      - name: Run standalone framework tests
-        run: |
           marker_args=""
           if [ -n "${{ inputs.marker_expression }}" ]; then
             marker_args="-m \"${{ inputs.marker_expression }}\""
           fi
 
+          cd "${GITHUB_WORKSPACE}"
+          export API_BASE_URL
           eval "poetry run pytest --alluredir=artifacts/allure-results ${{ inputs.test_target }} ${marker_args} ${{ inputs.pytest_args }}"
 
       - name: Upload test artifacts
